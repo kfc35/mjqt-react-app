@@ -8,10 +8,11 @@ interface MahjongTileProps {
 }
 
 function MahjongTile(props: MahjongTileProps) {
+  const id = props.tile.group + "-" + props.tile.value;
 
   return (
     <>
-      <button className="mahjong-tile-button">
+      <button className="mahjong-tile-button" id={id}>
         {mahjongTileToUnicodeMap.get(props.tile)}
       </button>
     </>
