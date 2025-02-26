@@ -3,6 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import MahjongTile from './mahjongTile/MahjongTile'
+import { BAMBOO_GENTLEMAN, CHRYSANTHEMUM_GENTLEMAN, ONE_BAMBOO, ONE_CIRCLE, ORCHID_GENTLEMAN, PLUM_GENTLEMAN, SPRING_SEASON } from 'mjqt-scoring'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -25,7 +26,10 @@ function App() {
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
-        <MahjongTile />
+        <MahjongTile tile={ONE_BAMBOO}/> 
+        <MahjongTile tile={ONE_CIRCLE}/>
+        <MahjongTile tile={PLUM_GENTLEMAN}/> <MahjongTile tile={ORCHID_GENTLEMAN}/>  <MahjongTile tile={BAMBOO_GENTLEMAN}/> <MahjongTile tile={CHRYSANTHEMUM_GENTLEMAN}/>
+        <MahjongTile tile={SPRING_SEASON}/>
       </div>
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more.
