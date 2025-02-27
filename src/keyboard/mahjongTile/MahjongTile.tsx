@@ -10,12 +10,12 @@ const terminalTilesSet: Set<Tile> = new Set(TERMINAL_TILES);
 
 interface MahjongTileProps {
   tile: Tile;
+  onTileClick?: () => void;
 }
 
 function MahjongTile(props: MahjongTileProps) {
-  const id = (props.tile.group + "-" + props.tile.value).toLowerCase();
   const classNames: string[] = [];
-  classNames.push("mahjong-tile-button");
+  classNames.push("mahjong-tile");
   if (simpleTilesSet.has(props.tile)) {
     classNames.push("simple-tile");
   }
@@ -28,9 +28,11 @@ function MahjongTile(props: MahjongTileProps) {
   if (reversibleTilesSet.has(props.tile)) {
     classNames.push("reversible-tile");
   }
+  const tileToCssClassName = (props.tile.group + "-" + props.tile.value).toLowerCase();
+  classNames.push(tileToCssClassName);
   return (
     <>
-      <button className={classNames.join(" ")} id ={id} >
+      <button className={classNames.join(" ")} onClick={props.onTileClick}>
         {mahjongTileToUnicodeMap.get(props.tile)}
       </button>
     </>
