@@ -1,19 +1,19 @@
-.mahjong-tile-button {
+.mahjong-tile {
     font-size: 3.5vmax;
     font-variant-emoji: unicode;
     padding: 0em 0.5vmax 0.2em 0.5vmax;
     margin: 0.6vmax 0.6vmax 0.6vmax 0.6vmax;
 }
 
-#dragon-green {
+.dragon-green {
     color: green;
 }
 
-#dragon-red {
+.dragon-red {
     color: red;
 }
 
-#dragon-white {
+.dragon-white {
     color: cornflowerblue;
 }
 

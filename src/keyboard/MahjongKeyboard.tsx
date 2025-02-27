@@ -1,10 +1,12 @@
 import './MahjongKeyboard.css'
 import { BAMBOO_TILES, CHARACTER_TILES, CIRCLE_TILES,
-    WIND_TILES, DRAGON_TILES,GENTLEMEN_TILES, SEASON_TILES, Tile
+    WIND_TILES, DRAGON_TILES,GENTLEMEN_TILES, SEASON_TILES, Tile, Meld
  } from "mjqt-scoring"
 import MahjongTile from "./mahjongTile/MahjongTile"
-import type { ReactElement } from "react";
+import { useState, ReactElement } from "react";
+import TileInputBar from './tileInputBar/TileInputBar';
 
+/** 
 export function MahjongKeyboardTable() {
     return (
     <>
@@ -33,109 +35,120 @@ export function MahjongKeyboardTable() {
     </>
     )
 }
+**/
 
 function MahjongKeyboard() {
+    const [tilesAndMelds, setTilesAndMelds] = useState([] as (Tile | Meld)[]);
+
+    function createOnTileClick(tile: Tile) {
+        return () => {
+            const nextTilesAndMelds = [...tilesAndMelds, tile];
+            setTilesAndMelds(nextTilesAndMelds);
+        };
+    }
+
+    function convertTilesToReactElement(tiles: Tile[]): ReactElement[] {
+        const elements: ReactElement[] = [];
+        for (const tile of tiles) {
+            const key = (tile.group + "-" + tile.value).toLowerCase();
+            elements.push(<MahjongTile tile={tile} key={key} onTileClick={createOnTileClick(tile)}/>);
+        }
+        return elements;
+    }
+
+    function WindTiles() {
+        return (
+        <>
+            <div className="keyboard-row">
+            {convertTilesToReactElement(WIND_TILES)}
+            </div>
+        </>
+        )
+    }
+    
+    function DragonTiles() {
+        return (
+        <>
+            <div className="keyboard-row">
+            {convertTilesToReactElement(DRAGON_TILES)}
+            </div>
+        </>
+        )
+    }
+    
+    function CharacterTiles() {
+        return (
+        <>
+            <div className="keyboard-row">
+            {convertTilesToReactElement(CHARACTER_TILES)}
+            </div>
+        </>
+        )
+    }
+    
+    function BambooTiles() {
+        return (
+        <>
+            <div className="keyboard-row">
+            {convertTilesToReactElement(BAMBOO_TILES)}
+            </div>
+        </>
+        )
+    }
+    
+    function CircleTiles() {
+        return (
+        <>
+            <div className="keyboard-row">
+            {convertTilesToReactElement(CIRCLE_TILES)}
+            </div>
+        </>
+        )
+    }
+    
+    function GentlemenTiles() {
+        return (
+        <>
+            <div className="keyboard-row">
+            {convertTilesToReactElement(GENTLEMEN_TILES)}
+            </div>
+        </>
+        )
+    }
+    
+    function SeasonTiles() {
+        return (
+        <>
+            <div className="keyboard-row">
+            {convertTilesToReactElement(SEASON_TILES)}
+            </div>
+        </>
+        )
+    }
+
     return (
     <>
+        <TileInputBar tilesAndMelds={tilesAndMelds}/>
         <div id="tile-buttons">
-        <div className="button-section" id="honor-tile-buttons">
-            <h3>Honor Tiles</h3>
-            <WindTiles />
-            <DragonTiles />
-        </div >
-        <div className="button-section" id="suited-tile-buttons">
+            <div className="button-section" id="honor-tile-buttons">
+                <h3>Honor Tiles</h3>
+                <WindTiles />
+                <DragonTiles />
+            </div >
+            <div className="button-section" id="suited-tile-buttons">
             <h3>Suited Tiles</h3>
-            <CharacterTiles />
-            <BambooTiles />
-            <CircleTiles />
-        </div>
-        <div className="button-section" id="flower-tile-buttons">
-            <h3>Flower Tiles</h3>
-            <GentlemenTiles />
-            <SeasonTiles />
-        </div>
+                <CharacterTiles />
+                <BambooTiles />
+                <CircleTiles />
+            </div>
+            <div className="button-section" id="flower-tile-buttons">
+                <h3>Flower Tiles</h3>
+                <GentlemenTiles  />
+                <SeasonTiles />
+            </div>
         </div>
     </>
     )
 }
   
 export default MahjongKeyboard
-
-function WindTiles() {
-    return (
-    <>
-        <div className="keyboard-row">
-        {convertTilesToReactElement(WIND_TILES)}
-        </div>
-    </>
-    )
-}
-
-function DragonTiles() {
-    return (
-    <>
-        <div className="keyboard-row">
-        {convertTilesToReactElement(DRAGON_TILES)}
-        </div>
-    </>
-    )
-}
-
-function CharacterTiles() {
-    return (
-    <>
-        <div className="keyboard-row">
-        {convertTilesToReactElement(CHARACTER_TILES)}
-        </div>
-    </>
-    )
-}
-
-function BambooTiles() {
-    return (
-    <>
-        <div className="keyboard-row">
-        {convertTilesToReactElement(BAMBOO_TILES)}
-        </div>
-    </>
-    )
-}
-
-function CircleTiles() {
-    return (
-    <>
-        <div className="keyboard-row">
-        {convertTilesToReactElement(CIRCLE_TILES)}
-        </div>
-    </>
-    )
-}
-
-function GentlemenTiles() {
-    return (
-    <>
-        <div className="keyboard-row">
-        {convertTilesToReactElement(GENTLEMEN_TILES)}
-        </div>
-    </>
-    )
-}
-
-function SeasonTiles() {
-    return (
-    <>
-        <div className="keyboard-row">
-        {convertTilesToReactElement(SEASON_TILES)}
-        </div>
-    </>
-    )
-}
-
-function convertTilesToReactElement(tiles: Tile[]): ReactElement[] {
-    const elements: ReactElement[] = [];
-    for (const tile of tiles) {
-        const key = (tile.group + "-" + tile.value).toLowerCase();
-        elements.push(<MahjongTile tile={tile} key={key}/>);
-    }
-    return elements;
-}
