@@ -1,0 +1,10 @@
+div#tile-buttons {
+    width: 100%;
+}
+div.button-section {
+    display: inline-block;
+    height: auto;
+    vertical-align: top;
+    padding: 0.1em;
+    margin: 0.1em;
+}

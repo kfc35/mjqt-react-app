@@ -1,22 +1,60 @@
+import './MahjongKeyboard.css'
 import { BAMBOO_TILES, CHARACTER_TILES, CIRCLE_TILES,
     WIND_TILES, DRAGON_TILES,GENTLEMEN_TILES, SEASON_TILES, Tile
  } from "mjqt-scoring"
 import MahjongTile from "./mahjongTile/MahjongTile"
 import type { ReactElement } from "react";
 
+export function MahjongKeyboardTable() {
+    return (
+    <>
+        <table>
+            <tr>
+                <th>Honor Tiles</th>
+                <th>Suited Tiles</th>
+                <th>Flower Tiles</th>
+            </tr>
+            <tr>
+                <td><WindTiles /></td>
+                <td><CharacterTiles /></td>
+                <td><GentlemenTiles /></td>
+            </tr>
+            <tr>
+                <td><DragonTiles /></td>
+                <td><BambooTiles /></td>
+                <td><SeasonTiles /></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><CircleTiles /></td>
+                <td></td>
+            </tr>
+        </table>
+    </>
+    )
+}
+
 function MahjongKeyboard() {
     return (
     <>
-        <h3>Honor Tiles</h3>
-        <WindTiles />
-        <DragonTiles />
-        <h3>Suited Tiles</h3>
-        <CharacterTiles />
-        <BambooTiles />
-        <CircleTiles />
-        <h3>Flower Tiles</h3>
-        <GentlemenTiles />
-        <SeasonTiles />
+        <div id="tile-buttons">
+        <div className="button-section" id="honor-tile-buttons">
+            <h3>Honor Tiles</h3>
+            <WindTiles />
+            <DragonTiles />
+        </div >
+        <div className="button-section" id="suited-tile-buttons">
+            <h3>Suited Tiles</h3>
+            <CharacterTiles />
+            <BambooTiles />
+            <CircleTiles />
+        </div>
+        <div className="button-section" id="flower-tile-buttons">
+            <h3>Flower Tiles</h3>
+            <GentlemenTiles />
+            <SeasonTiles />
+        </div>
+        </div>
     </>
     )
 }
@@ -96,7 +134,8 @@ function SeasonTiles() {
 function convertTilesToReactElement(tiles: Tile[]): ReactElement[] {
     const elements: ReactElement[] = [];
     for (const tile of tiles) {
-        elements.push(<MahjongTile tile={tile} key={tile.group + "-" + tile.value}/>);
+        const key = (tile.group + "-" + tile.value).toLowerCase();
+        elements.push(<MahjongTile tile={tile} key={key}/>);
     }
     return elements;
 }
