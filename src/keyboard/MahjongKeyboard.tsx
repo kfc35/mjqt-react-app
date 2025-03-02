@@ -1,6 +1,7 @@
 import './MahjongKeyboard.css'
 import { BAMBOO_TILES, CHARACTER_TILES, CIRCLE_TILES,
-    WIND_TILES, DRAGON_TILES,GENTLEMEN_TILES, SEASON_TILES, Tile, Meld
+    WIND_TILES, DRAGON_TILES,GENTLEMEN_TILES, SEASON_TILES, Tile, Meld,
+    isFlowerTile, maxQuantityPerFlowerTile, maxQuantityPerNonFlowerTile
  } from "mjqt-scoring"
 import MahjongTile from "./mahjongTile/MahjongTile"
 import { useState, ReactElement } from "react";
@@ -24,11 +25,19 @@ function MahjongKeyboard() {
         }
     }
 
+    function tileButtonDisabled(tile: Tile) {
+        if (isFlowerTile(tile)) {
+            return tilesAndMelds.filter(tileOrMeld => tileOrMeld instanceof Tile && tileOrMeld.equals(tile)).length >= maxQuantityPerFlowerTile;
+        }
+        return tilesAndMelds.filter(tileOrMeld => tileOrMeld instanceof Tile && tileOrMeld.equals(tile)).length >= maxQuantityPerNonFlowerTile;
+    }
+
     function convertTilesToReactElement(tiles: Tile[]): ReactElement[] {
         const elements: ReactElement[] = [];
         for (const tile of tiles) {
             const key = (tile.group + "-" + tile.value).toLowerCase();
-            elements.push(<MahjongTile tile={tile} key={key} onTileClick={createOnTileClickPush(tile)}/>);
+            elements.push(<MahjongTile tile={tile} key={key} onTileClick={createOnTileClickPush(tile)} 
+                disabled={tileButtonDisabled(tile)} />);
         }
         return elements;
     }

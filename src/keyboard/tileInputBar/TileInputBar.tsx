@@ -25,7 +25,7 @@ function TileInputBar(props : TileInputBarProps) {
       </div>
       <div>
         <h2>Inputted Flower Tiles</h2>
-          {flowerElements.length === 0 ? <p>None</p>: flowerElements}
+        {flowerElements.length === 0 ? <p>None</p>: flowerElements}
       </div>
     </>
   )
