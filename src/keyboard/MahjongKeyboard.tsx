@@ -1,13 +1,19 @@
 import './MahjongKeyboard.css'
 import { BAMBOO_TILES, CHARACTER_TILES, CIRCLE_TILES,
     WIND_TILES, DRAGON_TILES,GENTLEMEN_TILES, SEASON_TILES, Tile, Meld,
-    isFlowerTile, maxQuantityPerFlowerTile, maxQuantityPerNonFlowerTile
+    isFlowerTile, maxQuantityPerFlowerTile, maxQuantityPerNonFlowerTile,
+    type RootPointPredicateConfiguration
  } from "mjqt-scoring"
 import MahjongTile from "./mahjongTile/MahjongTile"
 import { useState, ReactElement } from "react";
 import TileInputBar from './tileInputBar/TileInputBar';
 
-function MahjongKeyboard() {
+interface MahjongKeyboardProps {
+    rootConfig: RootPointPredicateConfiguration;
+}
+
+function MahjongKeyboard(props: MahjongKeyboardProps) {
+    props;
     const [tilesAndMelds, setTilesAndMelds] = useState([] as (Tile | Meld)[]);
 
     function createOnTileClickPush(tile: Tile) {

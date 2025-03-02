@@ -4,4 +4,5 @@ import App from '../App'
 
 export const Route = createFileRoute('/')({
   component: App,
+  loader: ({context}) => context
 })

@@ -2,8 +2,11 @@ import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/about')({
   component: About,
+  loader: ({context}) => context
 })
 
 function About() {
-  return <div className="p-2">Hello from About!</div>
+  const context = Route.useLoaderData();
+
+  return <div>Hello from About! Max Points: {context.rootPointPredicateConfig.maxPoints}</div>
 }
