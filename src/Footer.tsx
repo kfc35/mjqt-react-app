@@ -1,5 +1,6 @@
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
+import tanstackLogo from '/tanstack.png'
 
 function Footer() {
     return (
@@ -16,11 +17,15 @@ function Footer() {
         <p>
         Made with 
         <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
+          <img src={viteLogo} className="logo" alt="Vite" />
         </a>
-        and 
+        , 
         <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
+          <img src={reactLogo} className="logo react" alt="React" />
+        </a>
+        , and 
+        <a href="https://tanstack.com/router/latest" target="_blank">
+          <img src={tanstackLogo} className="logo tanstack" alt="Tanstack" />
         </a>
         </p>
         </footer>

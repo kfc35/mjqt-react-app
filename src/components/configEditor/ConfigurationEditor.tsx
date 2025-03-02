@@ -1,4 +1,3 @@
-import '../../App.css'
 import { Route } from '../../routes/config';
 import { RootPointPredicateConfiguration } from 'mjqt-scoring';
 import { useRouter } from '@tanstack/react-router';
