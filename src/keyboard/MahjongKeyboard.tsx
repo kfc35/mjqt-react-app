@@ -6,52 +6,29 @@ import MahjongTile from "./mahjongTile/MahjongTile"
 import { useState, ReactElement } from "react";
 import TileInputBar from './tileInputBar/TileInputBar';
 
-/** 
-export function MahjongKeyboardTable() {
-    return (
-    <>
-        <table>
-            <tr>
-                <th>Honor Tiles</th>
-                <th>Suited Tiles</th>
-                <th>Flower Tiles</th>
-            </tr>
-            <tr>
-                <td><WindTiles /></td>
-                <td><CharacterTiles /></td>
-                <td><GentlemenTiles /></td>
-            </tr>
-            <tr>
-                <td><DragonTiles /></td>
-                <td><BambooTiles /></td>
-                <td><SeasonTiles /></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td><CircleTiles /></td>
-                <td></td>
-            </tr>
-        </table>
-    </>
-    )
-}
-**/
-
 function MahjongKeyboard() {
     const [tilesAndMelds, setTilesAndMelds] = useState([] as (Tile | Meld)[]);
 
-    function createOnTileClick(tile: Tile) {
+    function createOnTileClickPush(tile: Tile) {
         return () => {
             const nextTilesAndMelds = [...tilesAndMelds, tile];
             setTilesAndMelds(nextTilesAndMelds);
         };
     }
 
+    function createOnTileClickSplice(index: number) {
+        return () => {
+            const nextTilesAndMelds = [...tilesAndMelds];
+            nextTilesAndMelds.splice(index, 1);
+            setTilesAndMelds(nextTilesAndMelds);
+        }
+    }
+
     function convertTilesToReactElement(tiles: Tile[]): ReactElement[] {
         const elements: ReactElement[] = [];
         for (const tile of tiles) {
             const key = (tile.group + "-" + tile.value).toLowerCase();
-            elements.push(<MahjongTile tile={tile} key={key} onTileClick={createOnTileClick(tile)}/>);
+            elements.push(<MahjongTile tile={tile} key={key} onTileClick={createOnTileClickPush(tile)}/>);
         }
         return elements;
     }
@@ -128,7 +105,7 @@ function MahjongKeyboard() {
 
     return (
     <>
-        <TileInputBar tilesAndMelds={tilesAndMelds}/>
+        <TileInputBar tilesAndMelds={tilesAndMelds} createOnTileClickSplice={createOnTileClickSplice}/>
         <div id="tile-buttons">
             <div className="button-section" id="honor-tile-buttons">
                 <h3>Honor Tiles</h3>
