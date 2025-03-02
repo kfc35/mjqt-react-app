@@ -2,18 +2,38 @@
     color: green;
 }
 
+.dragon-green:disabled{
+    color: darkgreen;
+}
+
 .dragon-red {
     color: red;
+}
+
+.dragon-red:disabled {
+    color: darkred;
 }
 
 .dragon-white {
     color: cornflowerblue;
 }
 
+.dragon-white:disabled {
+    color: darkslateblue;
+}
+
 .green-tile {
     color: green
 }
 
+.green-tile:disabled {
+    color: darkgreen
+}
+
 .reversible-tile {
     background-image: linear-gradient(to top right, purple, black);
+}
+
+.reversible-tile:disabled {
+    background-image: linear-gradient(to top right, black, black);
 }

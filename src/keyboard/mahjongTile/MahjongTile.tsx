@@ -11,6 +11,7 @@ const terminalTilesSet: Set<Tile> = new Set(TERMINAL_TILES);
 interface MahjongTileProps {
   tile: Tile;
   onTileClick?: () => void;
+  disabled?: boolean;
 }
 
 function MahjongTile(props: MahjongTileProps) {
@@ -32,7 +33,7 @@ function MahjongTile(props: MahjongTileProps) {
   classNames.push(tileToCssClassName);
   return (
     <>
-      <button className={classNames.join(" ")} onClick={props.onTileClick}>
+      <button className={classNames.join(" ")} onClick={props.onTileClick} disabled={props.disabled}>
         {mahjongTileToUnicodeMap.get(props.tile)}
       </button>
     </>
