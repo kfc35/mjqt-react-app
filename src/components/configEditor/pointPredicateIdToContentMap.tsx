@@ -46,6 +46,8 @@ const selfDrawContent: PointPredicateContent = {
     description: <div className="config-description">Your winning tile was drawn from the wall (not eaten from someone else).</div>
 };
 
+
+
 const nineGatesContent: PointPredicateContent = {
     title: "Nine Gates",
     description: <div className="config-description">A Concealed Hand of 1112345678999 (three 1's, three 9's, and one of every other number 2-8) in the same suit, with a duplicate of any number.</div>
