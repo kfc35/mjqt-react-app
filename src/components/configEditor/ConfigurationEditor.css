@@ -1,0 +1,18 @@
+#root-config, .predicate-config {
+    display: inline-block;
+    vertical-align: top;
+    width: 40%;
+    padding: 2vmax;
+    border: 0.1vmax solid black;
+    border-radius: 8px;
+    margin: 0.5vmax;
+}
+
+.config-description {
+    text-align: left;
+}
+
+.included-point-predicates {
+    font-style: italic;
+    text-align: left;
+}
