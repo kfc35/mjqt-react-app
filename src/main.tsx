@@ -2,12 +2,13 @@ import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import './index.css'
-import { defaultRootPointPredicateConfiguration, type RootPointPredicateConfiguration } from 'mjqt-scoring'
+import { defaultRootPointPredicateConfiguration, type PointEvaluation, type RootPointPredicateConfiguration } from 'mjqt-scoring'
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
 
 export interface CalculatorContext {
-  rootPointPredicateConfig: RootPointPredicateConfiguration;
+  rootPointPredicateConfig: RootPointPredicateConfiguration
+  mostRecentPointEvaluation?: PointEvaluation
 }
 const initContext = { rootPointPredicateConfig: defaultRootPointPredicateConfiguration.clone() };
 

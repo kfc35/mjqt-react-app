@@ -6,18 +6,18 @@ export const Route = createRootRouteWithContext<CalculatorContext>()({
   component: () => {
     return (
     <>
-      <div>
+      <div id="nav">
         <Link to="/" className="[&.active]:font-bold" >
           Home
-        </Link>{' '}
+        </Link>{' | '}
         <Link to="/config" className="[&.active]:font-bold">
           Scoring Configuration
-        </Link>{' '}
+        </Link>{' | '}
         <Link to="/about" className="[&.active]:font-bold">
           About
         </Link>
+        <hr />
       </div>
-      <hr />
       <Outlet />
       <TanStackRouterDevtools />
     </>

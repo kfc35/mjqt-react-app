@@ -17,7 +17,7 @@ const commonHandContent: PointPredicateContent = {
     description: "1) All of your melds are consecutive runs in two or more different Suited Tiles. \n " + 
     "2) You win by self-draw. \n " + 
     "3) You have no flower tiles.\n " + 
-    "This rule can be configured to enforce that your pair must be valueless (no dragons or seat/prevailing wind pair). "
+    "This rule can be customized to enforce whether your pair must be valueless (no dragons or seat/prevailing wind pair). "
 };
 
 const allPongsAndKongsContent: PointPredicateContent = {
@@ -40,6 +40,16 @@ const selfDrawContent: PointPredicateContent = {
     description: "Your winning tile was drawn from the wall (not eaten from someone else)."
 };
 
+const nineGatesContent: PointPredicateContent = {
+    title: "Nine Gates",
+    description: "A Concealed Hand of 1112345678999 (three 1's, three 9's, and one of every other number 2-8) in the same suit, with a duplicate of any number."
+};
+
+const thirteenOrphansContent: PointPredicateContent = {
+    title: "Thirteen Orphans",
+    description: "A Concealed Hand consisting of one 1 and one 9 in every suit, one of every dragon, and one of every wind, with a duplicate of any of the preceding tiles."
+};
+
 pointPredicateIdToContentMap.set(PointPredicateID.ALL_CHOWS, allChowsContent);
 pointPredicateIdToContentMap.set(PointPredicateID.COMMON_HAND, commonHandContent);
 pointPredicateIdToContentMap.set(PointPredicateID.ALL_PONGS_AND_KONGS, allPongsAndKongsContent);
@@ -47,3 +57,6 @@ pointPredicateIdToContentMap.set(PointPredicateID.SEVEN_PAIRS, sevenPairsContent
 pointPredicateIdToContentMap.set(PointPredicateID.ALL_KONGS, allKongsContent);
 
 pointPredicateIdToContentMap.set(PointPredicateID.SELF_DRAW, selfDrawContent);
+
+pointPredicateIdToContentMap.set(PointPredicateID.NINE_GATES, nineGatesContent);
+pointPredicateIdToContentMap.set(PointPredicateID.THIRTEEN_ORPHANS, thirteenOrphansContent);
