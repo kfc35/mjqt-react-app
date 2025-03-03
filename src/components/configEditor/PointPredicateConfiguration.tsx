@@ -1,4 +1,4 @@
-import { strIsPointType, convertToPointType, RootPointPredicateConfiguration, type PointPredicateBaseConfiguration, MAX_POINTS } from "mjqt-scoring";
+import { convertToPointType, RootPointPredicateConfiguration, PointPredicateBaseConfiguration, MAX_POINTS } from "mjqt-scoring";
 import { pointPredicateIdToContentMap, PointPredicateContent } from "./pointPredicateIdToContentMap"
 import { useState, ReactElement } from "react";
 import { getRouteApi, useRouter } from '@tanstack/react-router'
@@ -54,18 +54,29 @@ function PointPredicateConfiguration(props: PointPredicateConfigurationProps) {
 
     function submit(event: React.FormEvent) {
         event.preventDefault();
+
         const pts = convertToPointType(points);
         if (!pts || (pts !== MAX_POINTS && pts < 0)) {
             alert(pointPredicateContent.title + " does not have a valid Points value. " +
                 "It must be 0, a positive number, or 'MAX'.");
+            return;
         } else if (pts !== MAX_POINTS && pts > rootConfig.maxPoints) {
             baseConfig.points = MAX_POINTS;
         } else {
             baseConfig.points = pts;
         }
+        
         baseConfig.enabled = enabled;
         baseConfig.isBonus = isBonus;
         router.invalidate();
+        setSubmitDisabled(true);
+    }
+
+    function discard(event: React.FormEvent) {
+        event.preventDefault();
+        setEnabled(baseConfig.enabled);
+        setIsBonus(baseConfig.isBonus);
+        setPoints(baseConfig.points + "");
         setSubmitDisabled(true);
     }
 
@@ -80,21 +91,29 @@ function PointPredicateConfiguration(props: PointPredicateConfigurationProps) {
                 {pointPredicateContent.description}
                 {includedPointPredicateSection}
                 <form onSubmit={submit}>
+                <div className="config-row">
                 <div>
-                    <label htmlFor={enabledId}>Enabled: </label><input type="checkbox" id={enabledId} checked={enabled} onChange={onEnabledChange} />
+                    <label htmlFor={enabledId}>Enabled: </label>
+                    <input type="checkbox" id={enabledId} checked={enabled} onChange={onEnabledChange} />
                 </div>
                 <div>
-                    <label htmlFor={isBonusId}>Is Bonus: </label><input type="checkbox" id={isBonusId} checked={isBonus} onChange={onIsBonusChange} />
+                    <label htmlFor={pointsId}>Points: </label>
+                    <input type="text" id={pointsId} size={4} value={points} onChange={onPointsChange} />
                 </div>
                 <div>
-                    <label htmlFor={pointsId}>Points: </label><input type="text" id={pointsId} value={points} onChange={onPointsChange} />
+                    <label htmlFor={isBonusId}>Is Bonus: </label>
+                    <input type="checkbox" id={isBonusId} checked={isBonus} onChange={onIsBonusChange} />
                 </div>
-                <br />
+                </div>
+                <div className="config-row">
                 <div>
-                    <input type="submit" value="Save Changes" disabled={submitDisabled}/>
+                    <input type="submit" value="Save Changes" disabled={submitDisabled}/> 
+                </div>
+                <div>
+                    <input type="button" value="Discard Changes" onClick={discard} disabled={submitDisabled}/> 
+                </div> 
                 </div>
                 </form>
-                
             </div>
         </>
     );
