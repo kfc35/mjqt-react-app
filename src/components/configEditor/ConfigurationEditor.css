@@ -8,12 +8,8 @@
     margin: 0.5vmax;
 }
 
-#root-config {
-    width: 40%;
-}
-
 .predicate-config {
-    width: 33%;
+    display: inline-block;
 }
 
 .config-description {
