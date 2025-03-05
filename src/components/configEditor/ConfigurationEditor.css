@@ -8,12 +8,12 @@
     margin: 0.5vmax;
 }
 
-.predicate-config {
-    display: inline-block;
+#root-config-description, .predicate-description {
+    text-align: left;
 }
 
-.config-description {
-    text-align: left;
+.predicate-config {
+    display: inline-block;
 }
 
 .included-point-predicates {

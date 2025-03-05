@@ -45,7 +45,7 @@ function ConfigurationEditor() {
         <div className="card">
             <div id="root-config">
                 <h3>Root Config</h3>
-                <div className="config-description">Top level configuration that applies to all other rules.</div>
+                <div id="root-config-description">Top level configuration that applies to all other rules.</div>
                 <br />
                 <form className="config-form" onSubmit={submit}>
                     <div>

@@ -1,23 +1,17 @@
 import { PointPredicateID } from "mjqt-scoring";
-import { ReactElement } from "react";
-
-export interface PointPredicateContent {
-    title: string,
-    description: ReactElement,
-    example?: string,
-}
+import { PointPredicateContent } from "./pointPredicateContent"
 
 export const pointPredicateIdToContentMap: Map<string, PointPredicateContent> = new Map();
 
 const allChowsContent: PointPredicateContent = {
     title: "All Chows (Consecutive Runs)",
-    description: <div className="config-description"><p>All of your 3+ tile melds are consecutive runs.</p></div>,
+    description: <div className="predicate-description"><p>All of your 3+ tile melds are consecutive runs.</p></div>,
 };
 
 const commonHandContent: PointPredicateContent = {
     title: "Common Hand",
     description: 
-    <div className="config-description">
+    <div className="predicate-description">
         <ol>
         <li>All of your 3+ tile melds are chows.</li>
         <li>Your hand has more than one different Suited Tile.</li>
@@ -31,28 +25,28 @@ const commonHandContent: PointPredicateContent = {
 
 const allPongsAndKongsContent: PointPredicateContent = {
     title: "All Triples",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your 3+ tile melds must be a mix of pongs or kongs.</p>
         </div>
 };
 
 const sevenPairsContent: PointPredicateContent = {
     title: "Seven Pairs",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your hand is 14 tiles long and consists of 7 pairs. No kongs allowed.</p>
         </div>
 };
 
 const allKongsContent: PointPredicateContent = {
     title: "All Kongs",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>All of your 3+ tile melds must be kongs.</p>
         </div>
 };
 
 const nineGatesContent: PointPredicateContent = {
     title: "Nine Gates",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>A Concealed Hand of 1112345678999 in the same suit, with a duplicate of any number.</p>
         <p>It is called nine gates because, once you have 1112345678999, any duplicate can create a winning hand of a pair and four other 3-tile melds.</p>
         </div>
@@ -60,7 +54,7 @@ const nineGatesContent: PointPredicateContent = {
 
 const thirteenOrphansContent: PointPredicateContent = {
     title: "Thirteen Orphans",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>A Concealed Hand consisting of: </p>
         <ul>
             <li>one 1 and one 9 in every suit</li>
@@ -73,91 +67,91 @@ const thirteenOrphansContent: PointPredicateContent = {
 
 const selfDrawContent: PointPredicateContent = {
     title: "Win By Self Draw",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your winning tile is drawn from the wall.</p>
         </div>
 };
 
 const robbingKongContent: PointPredicateContent = {
     title: "Robbing a Kong",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your winning tile is the same tile being added to a previously exposed pong during another player's turn.</p>
         </div>
 };
 
 const winByLastTileContent: PointPredicateContent = {
     title: "Win By Last Tile",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your winning tile is the last tile of the wall.</p>
         </div>
 };
 
 const winByLastDiscardContent: PointPredicateContent = {
     title: "Win By Last Discard",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your winning tile is the last tile discarded of the whole game.</p>
         </div>
 };
 
 const winByKongContent: PointPredicateContent = {
     title: "Win By Kong",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your winning tile is the replacement tile you picked up after declaring/promoting a kong.</p>
         </div>
 };
 
 const winByDoubleKongContent: PointPredicateContent = {
     title: "Win By Double Kong",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your winning tile is the second replacement tile you picked up after declaring/promoting two kongs within the same turn.</p>
         </div>
 };
 
 const earthlyHandContent: PointPredicateContent = {
     title: "Earthly Hand",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your seat wind is East and your initial hand is a winning hand.</p>
         </div>
 };
 
 const heavenlyHandContent: PointPredicateContent = {
     title: "Heavenly Hand",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your seat wind is NOT East and your initial hand with East's first discard is a winning hand.</p>
         </div>
 };
 
 const lastOfItsKindContent: PointPredicateContent = {
     title: "Last Of Its Kind",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your winning tile is the last of its kind (i.e., the fourth tile of it), and it is visible to all players that it was the last of its kind via discarded tiles and exposed melds.</p>
         </div>
 };
 
 const winByFlowerContent: PointPredicateContent = {
     title: "Win By Flower",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your winning tile is the replacement tile after you picked up a flower tile.</p>
         </div>
 };
 
 const winByDoubleFlowerContent: PointPredicateContent = {
     title: "Win By Double Flower",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your winning tile is the second replacement tile after you picked up two flower tiles in a row.</p>
         </div>
 };
 
 const winByMixedDoubleReplacementContent: PointPredicateContent = {
     title: "Win By Mixed Double Replacement",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your winning tile is the second replacement tile you picked up after a combination of declaring/promoting a kong and a flower tile in any order.</p>
         </div>
 };
 
 const concealedHandContent: PointPredicateContent = {
     title: "Concealed Hand",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Four of your hand's five melds (including your pair) are self drawn.</p>
         <p>You may win via discard to complete any of your melds in order to complete this hand.</p>
         <p>This rule can be customized to only permit you to win via discard when the tile completes your pair.</p>
@@ -166,7 +160,7 @@ const concealedHandContent: PointPredicateContent = {
 
 const selfTripletsContent: PointPredicateContent = {
     title: "Self Triples",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your hand's 3-tile melds are all pongs that you never exposed.</p>
         <p>This rule can be customized to allow concealed kongs in your hand.</p>
         </div>
@@ -174,14 +168,14 @@ const selfTripletsContent: PointPredicateContent = {
 
 const fullyConcealedHandContent: PointPredicateContent = {
     title: "Fully Concealed Hand",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your hand was concealed AND you self drew your last tile.</p>
         </div>
 };
 
 const meldedHandContent: PointPredicateContent = {
     title: "Melded Hand",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your hand's 3-tile melds are all exposed. </p>
         <p>This rule can be customized two ways: </p>
         <ul>
@@ -193,21 +187,21 @@ const meldedHandContent: PointPredicateContent = {
 
 const fullyMeldedHandContent: PointPredicateContent = {
     title: "Fully Melded Hand",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>All of your melds were completed by eating others' discards, and you win by discard.</p>
         </div>
 };
 
 const noGentlemenOrSeasonsContent: PointPredicateContent = {
     title: "No Flowers",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>You did not draw any flower tiles (gentlemen or seasons).</p>
         </div>
 };
 
 const seatGentlemanContent: PointPredicateContent = {
     title: "Seat Gentleman",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>You drew the gentleman tile that corresponds to your seat wind.</p>
         <ol>
             <li>Plum for East</li>
@@ -220,7 +214,7 @@ const seatGentlemanContent: PointPredicateContent = {
 
 const seatSeasonContent: PointPredicateContent = {
     title: "Seat Season",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>You drew the season tile that corresponds to your seat wind.</p>
         <ol>
             <li>Spring for East</li>
@@ -233,21 +227,21 @@ const seatSeasonContent: PointPredicateContent = {
 
 const allGentlemenContent: PointPredicateContent = {
     title: "All Gentlemen",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>You drew all of the gentlemen tiles.</p>
         </div>
 };
 
 const allSeasonsContent: PointPredicateContent = {
     title: "All Seasons",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>You drew all of the season tiles.</p>
         </div>
 };
 
 const prevailingGentlemanContent: PointPredicateContent = {
     title: "Prevailing Gentleman",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>You drew the gentleman tile that corresponds to the prevailing wind.</p>
         <ol>
             <li>Plum for East</li>
@@ -260,7 +254,7 @@ const prevailingGentlemanContent: PointPredicateContent = {
 
 const prevailingSeasonContent: PointPredicateContent = {
     title: "Prevailing Season",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>You drew the season tile that corresponds to the prevailing wind.</p>
         <ol>
             <li>Spring for East</li>
@@ -273,14 +267,14 @@ const prevailingSeasonContent: PointPredicateContent = {
 
 const allGentlemenAndSeasonsContent: PointPredicateContent = {
     title: "All Gentlemen and Seasons",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>You drew all of the flower tiles, gentleman and seasons.</p>
         </div>
 };
 
 const jadeDragonContent: PointPredicateContent = {
     title: "Jade Dragon",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <ul>
             <li>Your hand's 3+-tile melds are a mixture of pongs and kongs</li>
             <li>One of your 3+-tile melds is a pong or kong of the Green Dragon</li>
@@ -291,7 +285,7 @@ const jadeDragonContent: PointPredicateContent = {
 
 const rubyDragonContent: PointPredicateContent = {
     title: "Ruby Dragon",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <ul>
             <li>Your hand's 3+-tile melds are a mixture of pongs and kongs</li>
             <li>One of your 3+-tile melds is a pong or kong of the Red Dragon</li>
@@ -302,7 +296,7 @@ const rubyDragonContent: PointPredicateContent = {
 
 const pearlDragonContent: PointPredicateContent = {
     title: "Pearl Dragon",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <ul>
             <li>Your hand's 3+-tile melds are a mixture of pongs and kongs</li>
             <li>One of your 3+-tile melds is a pong or kong of the White Dragon</li>
@@ -313,119 +307,119 @@ const pearlDragonContent: PointPredicateContent = {
 
 const greenDragonPongKongContent: PointPredicateContent = {
     title: "Green Dragon Pong/Kong",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your hand contains a pong/kong of the Green Dragon.</p>
         </div>
 };
 
 const redDragonPongKongContent: PointPredicateContent = {
     title: "Red Dragon Pong/Kong",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your hand contains a pong/kong of the Red Dragon.</p>
         </div>
 };
 
 const whiteDragonPongKongContent: PointPredicateContent = {
     title: "White Dragon Pong/Kong",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your hand contains a pong/kong of the White Dragon.</p>
         </div>
 };
 
 const seatWindPongKongContent: PointPredicateContent = {
     title: "Seat Wind Pong/Kong",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your hand contains a pong/kong of your seat wind.</p>
         </div>
 };
 
 const prevailingWindPongKongContent: PointPredicateContent = {
     title: "Prevailing Pong/Kong",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your hand contains a pong/kong of the round's prevailing wind.</p>
         </div>
 };
 
 const smallThreeDragonsContent: PointPredicateContent = {
     title: "Small Three Dragons",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your hand contains two pongs/kongs of two of the dragons and a pair of the third.</p>
         </div>
 };
 
 const bigThreeDragonsContent: PointPredicateContent = {
     title: "Big Three Dragons",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your hand contains pongs/kongs of all three of the dragons.</p>
         </div>
 };
 
 const smallFourWindsContent: PointPredicateContent = {
     title: "Small Four Winds",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your hand contains pongs/kongs of three of the winds and a pair of the fourth.</p>
         </div>
 };
 
 const bigFourWindsContent: PointPredicateContent = {
     title: "Big Four Winds",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your hand contains pongs/kongs of all four of the winds.</p>
         </div>
 };
 
 const allHonorsAndTerminalsContent: PointPredicateContent = {
     title: "All Honors And Terminals",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your hand consists of only Honors (Dragons & Winds) and Terminals (1's & 9's).</p>
         </div>
 };
 
 const allOneSuitAndHonorsContent: PointPredicateContent = {
     title: "All One Suit With Honors",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your hand consists of only one of the three Suits (Character, Bamboo, or Circle) and Honors (Dragons & Winds).</p>
         </div>
 };
 
 const allOneSuitContent: PointPredicateContent = {
     title: "All One Suit",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your hand consists of only one of the three Suits (Character, Bamboo, or Circle).</p>
         </div>
 };
 
 const allHonorsContent: PointPredicateContent = {
     title: "All Honors",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your hand consists of only Honors (Dragons & Winds).</p>
         </div>
 };
 
 const allTerminalsContent: PointPredicateContent = {
     title: "All Terminals",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your hand consists of only Terminals (1's and 9's).</p>
         </div>
 };
 
 const allSimplesContent: PointPredicateContent = {
     title: "All Simples",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your hand consists of only Simples (tiles 2's through 8's).</p>
         </div>
 };
 
 const voidedSuitContent: PointPredicateContent = {
     title: "Voided Suit",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your hand does not contain any tiles from only one of the three Suits (Character, Bamboo, or Circle).</p>
         </div>
 };
 
 const plumBlossomOnTheRoofContent: PointPredicateContent = {
     title: "Plum Blossom on the Roof",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your winning tile is:</p> 
         <ul>
             <li>A Five of Bamboo that completes a 4-5-6 Bamboo Chow</li>
@@ -437,13 +431,18 @@ const plumBlossomOnTheRoofContent: PointPredicateContent = {
 
 const moonFromTheBottomOfTheSeaContent: PointPredicateContent = {
     title: "Moon from the Bottom of the Sea",
-    description: <div className="config-description">
+    description: <div className="predicate-description">
         <p>Your winning tile is:</p>
         <ul>
             <li>The One of Circle</li>
             <li>The last tile from the wall via self-draw</li>
         </ul>
         </div>
+};
+
+const chickenHandContent: PointPredicateContent = {
+    title: "Chicken Hand",
+    description: <div className="predicate-description"><p>Your hand does not earn points from any other rules.</p></div>,
 };
 
 /* Basic Hands */
@@ -514,3 +513,5 @@ pointPredicateIdToContentMap.set(PointPredicateID.VOIDED_SUIT, voidedSuitContent
 
 pointPredicateIdToContentMap.set(PointPredicateID.PLUM_BLOSSOM_ON_THE_ROOF, plumBlossomOnTheRoofContent);
 pointPredicateIdToContentMap.set(PointPredicateID.MOON_FROM_THE_BOTTOM_OF_THE_SEA, moonFromTheBottomOfTheSeaContent);
+
+pointPredicateIdToContentMap.set(PointPredicateID.CHICKEN_HAND, chickenHandContent);
