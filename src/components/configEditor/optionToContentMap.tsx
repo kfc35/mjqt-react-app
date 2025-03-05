@@ -26,7 +26,7 @@ const meldedHandLastDiscardedTileMustCompletePair = {
 const meldedHandAllowSelfDrawToCompletePair = {
     title: "Melded Hand: Allow Self Draw to Complete Pair",
     description: "This option allows melded hands to win via self draw for their pair, as long as there are four already exposed non-pair melds. \n" + 
-    "If disabled, you must win via discard (by definition of a Melded Hand) \n " + 
+    "If disabled, you must win via discard. \n " + 
     "Default = false."
 }
 

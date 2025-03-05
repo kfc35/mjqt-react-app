@@ -1,6 +1,6 @@
 import './MahjongKeyboard.css'
 import { BAMBOO_TILES, CHARACTER_TILES, CIRCLE_TILES,
-    WIND_TILES, DRAGON_TILES,GENTLEMEN_TILES, SEASON_TILES, Tile, Meld,
+    WIND_TILES, DRAGON_TILES, GENTLEMEN_TILES, SEASON_TILES, Tile, Meld,
     isFlowerTile, maxQuantityPerFlowerTile, maxQuantityPerNonFlowerTile,
     type RootPointPredicateConfiguration
  } from "mjqt-scoring"

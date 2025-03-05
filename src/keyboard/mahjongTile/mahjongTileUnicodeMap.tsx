@@ -56,8 +56,8 @@ mahjongTileToUnicodeMap.set(NINE_CIRCLE, "\uD83C\uDC21");
 
 mahjongTileToUnicodeMap.set(PLUM_GENTLEMAN, "\uD83C\uDC22");
 mahjongTileToUnicodeMap.set(ORCHID_GENTLEMAN, "\uD83C\uDC23");
-mahjongTileToUnicodeMap.set(BAMBOO_GENTLEMAN, "\uD83C\uDC24");
 mahjongTileToUnicodeMap.set(CHRYSANTHEMUM_GENTLEMAN, "\uD83C\uDC25");
+mahjongTileToUnicodeMap.set(BAMBOO_GENTLEMAN, "\uD83C\uDC24");
 mahjongTileToUnicodeMap.set(SPRING_SEASON, "\uD83C\uDC26");
 mahjongTileToUnicodeMap.set(SUMMER_SEASON, "\uD83C\uDC27");
 mahjongTileToUnicodeMap.set(AUTUMN_SEASON, "\uD83C\uDC28");
