@@ -475,7 +475,7 @@ pointPredicateIdToContentMap.set(PointPredicateID.CONCEALED_HAND, concealedHandC
 pointPredicateIdToContentMap.set(PointPredicateID.SELF_TRIPLETS, selfTripletsContent);
 pointPredicateIdToContentMap.set(PointPredicateID.FULLY_CONCEALED_HAND, fullyConcealedHandContent);
 pointPredicateIdToContentMap.set(PointPredicateID.MELDED_HAND, meldedHandContent);
-pointPredicateIdToContentMap.set(PointPredicateID.FULLY_CONCEALED_HAND, fullyMeldedHandContent);
+pointPredicateIdToContentMap.set(PointPredicateID.FULLY_MELDED_HAND, fullyMeldedHandContent);
 
 /* Flowers */
 pointPredicateIdToContentMap.set(PointPredicateID.NO_GENTLEMEN_OR_SEASONS, noGentlemenOrSeasonsContent);

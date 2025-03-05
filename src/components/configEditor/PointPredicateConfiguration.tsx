@@ -23,6 +23,7 @@ function PointPredicateConfiguration(props: PointPredicateConfigurationProps) {
     const [enabled, setEnabled] = useState(baseConfig.enabled);
     const [isBonus, setIsBonus] = useState(baseConfig.isBonus);
     const [points, setPoints] = useState(baseConfig.points + "");
+    const [includedPointPredicates, setIncludedPointPredicates] = useState(baseConfig.generateIncludedPointPredicates(rootConfig.pointPredicateLogicConfiguration));
     const [submitDisabled, setSubmitDisabled] = useState(true);
     //const [logicConfigOptionValues, setLogicConfigOptionValues] = useState([]);
 
@@ -84,7 +85,7 @@ function PointPredicateConfiguration(props: PointPredicateConfigurationProps) {
     const enabledId = props.pointPredicateId + "_enabled";
     const isBonusId = props.pointPredicateId + "_isBonus";
     const pointsId = props.pointPredicateId + "_points";
-    const includedPointPredicateSection = includedPointPredicatesToElement(baseConfig.includedPointPredicates);
+    const includedPointPredicateSection = includedPointPredicatesToElement(includedPointPredicates);
     return(
         <>
             <div className="predicate-config">
