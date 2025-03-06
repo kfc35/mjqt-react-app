@@ -2,10 +2,17 @@ import './MahjongKeyboard.css'
 import { BAMBOO_TILES, CHARACTER_TILES, CIRCLE_TILES,
     WIND_TILES, DRAGON_TILES, GENTLEMEN_TILES, SEASON_TILES, Tile, Meld,
     isFlowerTile, maxQuantityPerFlowerTile, maxQuantityPerNonFlowerTile,
-    type RootPointPredicateConfiguration
+    RootPointPredicateConfiguration, evaluateHand, Hand,
+    WinContext,
+    RoundContext,
+    WindDirection,
+    MostRecentTileContext,
+    isSuitedOrHonorTile,
+    isHongKongTile, HongKongTile
  } from "mjqt-scoring"
 import MahjongTile from "./mahjongTile/MahjongTile"
 import { useState, ReactElement } from "react";
+import { useRouter, getRouteApi } from '@tanstack/react-router';
 import TileInputBar from './tileInputBar/TileInputBar';
 
 interface MahjongKeyboardProps {
@@ -13,13 +20,29 @@ interface MahjongKeyboardProps {
 }
 
 function MahjongKeyboard(props: MahjongKeyboardProps) {
-    props;
     const [tilesAndMelds, setTilesAndMelds] = useState([] as (Tile | Meld)[]);
+    const [submitDisabled, setSubmitDisabled] = useState(true);
+    const [clearDisabled, setClearDisabled] = useState(true);
+    const router = useRouter();
+    const route = getRouteApi('/');
+    const loaderData = route.useLoaderData();
 
     function createOnTileClickPush(tile: Tile) {
         return () => {
             const nextTilesAndMelds = [...tilesAndMelds, tile];
             setTilesAndMelds(nextTilesAndMelds);
+
+            const nonFlowerTiles = nextTilesAndMelds
+            .map(tileOrMeld => tileOrMeld instanceof Tile ? [tileOrMeld] : tileOrMeld.tiles)
+            .reduce<Tile[]>((accum, tiles) => accum.concat(tiles), [])
+            .filter(tile => !isFlowerTile(tile))
+
+            if (nonFlowerTiles.length < 14) {
+                setSubmitDisabled(true);
+            } else {
+                setSubmitDisabled(false);
+            }
+            setClearDisabled(false);
         };
     }
 
@@ -28,6 +51,20 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
             const nextTilesAndMelds = [...tilesAndMelds];
             nextTilesAndMelds.splice(index, 1);
             setTilesAndMelds(nextTilesAndMelds);
+
+            const nonFlowerTiles = nextTilesAndMelds
+            .map(tileOrMeld => tileOrMeld instanceof Tile ? [tileOrMeld] : tileOrMeld.tiles)
+            .reduce<Tile[]>((accum, tiles) => accum.concat(tiles), [])
+            .filter(tile => !isFlowerTile(tile))
+
+            if (nonFlowerTiles.length < 14) {
+                setSubmitDisabled(true);
+            } else {
+                setSubmitDisabled(false);
+            }
+            if (nextTilesAndMelds.length === 0) {
+                setClearDisabled(true);
+            }
         }
     }
 
@@ -46,6 +83,41 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
                 disabled={tileButtonDisabled(tile)} />);
         }
         return elements;
+    }
+
+    function onSubmit() {
+        const tiles: HongKongTile[] = tilesAndMelds
+            .map(tileOrMeld => tileOrMeld instanceof Tile ? [tileOrMeld] : tileOrMeld.tiles)
+            .reduce<Tile[]>((accum, tiles) => accum.concat(tiles), [])
+            .filter(tile => isHongKongTile(tile));
+        const nonFlowerTiles = tiles.filter(tile => !isFlowerTile(tile) && isSuitedOrHonorTile(tile));
+        if (nonFlowerTiles.length < 14) {
+            alert("You need at least 14 tiles to submit.");
+            return;
+        }
+        const lastTile = nonFlowerTiles[nonFlowerTiles.length-1];
+
+        // TODO going to need to figure out this API to make this easier.
+        const pointEval = evaluateHand(new Hand(tiles, new MostRecentTileContext(lastTile, true)), 
+            (new WinContext.Builder()).build(), 
+            new RoundContext(WindDirection.EAST, WindDirection.EAST),
+            props.rootConfig);
+        if (loaderData.mostRecentPointEvaluations.length > 0) {
+            loaderData.mostRecentPointEvaluations.splice(0, loaderData.mostRecentPointEvaluations.length);
+        }
+        if (pointEval) {
+            loaderData.mostRecentPointEvaluations.push(pointEval);
+            router.invalidate();
+            router.navigate({ to: '/results'});
+        } else {
+            alert("Unsuccessful result. Check your hand and try again.");
+            return
+        }
+    }
+
+    function onClear() {
+        setTilesAndMelds([]);
+        setSubmitDisabled(true);
     }
 
     function WindTiles() {
@@ -121,6 +193,11 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
     return (
     <>
         <TileInputBar tilesAndMelds={tilesAndMelds} createOnTileClickSplice={createOnTileClickSplice}/>
+        <div>
+            <button id="calculator-submit" onClick={onSubmit} disabled={submitDisabled}>Submit</button>
+            { }
+            <button id="calculator-clear" onClick={onClear} disabled={clearDisabled}>Clear</button>
+        </div>
         <div id="tile-buttons">
             <div className="button-section" id="honor-tile-buttons">
                 <h3>Honor Tiles</h3>

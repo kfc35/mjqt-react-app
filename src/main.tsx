@@ -8,11 +8,11 @@ import { routeTree } from './routeTree.gen'
 
 export interface CalculatorContext {
   rootPointPredicateConfig: RootPointPredicateConfiguration
-  mostRecentPointEvaluation?: PointEvaluation
+  mostRecentPointEvaluations: PointEvaluation[]
 }
 const initContext = { 
   rootPointPredicateConfig: defaultRootPointPredicateConfiguration.clone(),
-  mostRecentPointEvaluation: undefined
+  mostRecentPointEvaluations: []
 };
 
 // Create a new router instance
