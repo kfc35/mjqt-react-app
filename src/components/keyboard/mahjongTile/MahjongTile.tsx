@@ -1,6 +1,6 @@
 import './MahjongTile.css'
 import { Tile, GREEN_TILES, REVERSIBLE_TILES, SIMPLE_TILES, TERMINAL_TILES } from 'mjqt-scoring'
-import mahjongTileToUnicodeMap from './mahjongTileUnicodeMap'
+import mahjongTileToUnicodeMap from '../../../content/mahjongTileUnicodeMap'
 
 const greenTilesSet: Set<Tile> = new Set(GREEN_TILES);
 const reversibleTilesSet: Set<Tile> = new Set(REVERSIBLE_TILES);

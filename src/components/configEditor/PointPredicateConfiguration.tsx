@@ -1,8 +1,8 @@
 import { convertToPointType, pointPredicateIdToLogicOptionsMap, 
     RootPointPredicateConfiguration, PointPredicateBaseConfiguration, MAX_POINTS, 
     PointPredicateLogicConfiguration} from "mjqt-scoring";
-import { PointPredicateContent } from "./pointPredicateContent";
-import { pointPredicateIdToContentMap } from "./pointPredicateIdToContentMap"
+import { PointPredicateContent } from "../../content/pointPredicateContent";
+import { pointPredicateIdToContentMap } from "../../content/pointPredicateIdToContentMap"
 import { pointPredicateLogicOptionToContentMap } from "./optionToContentMap";
 import { useState, ReactElement } from "react";
 import { getRouteApi, useRouter } from '@tanstack/react-router'

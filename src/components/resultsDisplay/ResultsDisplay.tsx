@@ -1,10 +1,10 @@
 import { MeldBasedWinningHand, WinningHand, PointEvaluation, PointPredicateResult, PointPredicateSingleSuccessResult, PointPredicateFailureResult } from 'mjqt-scoring'
-import mahjongTileToUnicodeMap from '../../keyboard/mahjongTile/mahjongTileUnicodeMap';
+import mahjongTileToUnicodeMap from '../../content/mahjongTileUnicodeMap';
 import { ReactElement } from 'react';
 import { getRouteApi } from '@tanstack/react-router';
 import './ResultsDisplay.css'
-import { pointPredicateIdToContentMap } from '../configEditor/pointPredicateIdToContentMap';
-import { subPointPredicateIdToContentMap } from '../configEditor/subPointPredicateIdToContentMap';
+import { pointPredicateIdToContentMap } from '../../content/pointPredicateIdToContentMap';
+import { subPointPredicateIdToContentMap } from '../../content/subPointPredicateIdToContentMap';
 
 function ResultsDisplay() {
     const route = getRouteApi('/results');

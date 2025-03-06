@@ -1,5 +1,5 @@
 import './App.css'
-import MahjongKeyboard from './keyboard/MahjongKeyboard'
+import MahjongKeyboard from './components/keyboard/MahjongKeyboard'
 import Footer from './Footer'
 import { Route } from './routes/index';
 import type { CalculatorContext } from './main';
