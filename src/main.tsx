@@ -10,7 +10,10 @@ export interface CalculatorContext {
   rootPointPredicateConfig: RootPointPredicateConfiguration
   mostRecentPointEvaluation?: PointEvaluation
 }
-const initContext = { rootPointPredicateConfig: defaultRootPointPredicateConfiguration.clone() };
+const initContext = { 
+  rootPointPredicateConfig: defaultRootPointPredicateConfiguration.clone(),
+  mostRecentPointEvaluation: undefined
+};
 
 // Create a new router instance
 const router = createRouter({ routeTree, context: initContext })

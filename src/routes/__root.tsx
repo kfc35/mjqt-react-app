@@ -8,10 +8,13 @@ export const Route = createRootRouteWithContext<CalculatorContext>()({
     <>
       <div id="nav">
         <Link to="/" className="[&.active]:font-bold" >
-          Home
+          Calculator
+        </Link>{' | '}
+        <Link to="/results" className="[&.active]:font-bold">
+          Results
         </Link>{' | '}
         <Link to="/config" className="[&.active]:font-bold">
-          Scoring Configuration
+          Configuration
         </Link>{' | '}
         <Link to="/about" className="[&.active]:font-bold">
           About
