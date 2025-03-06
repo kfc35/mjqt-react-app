@@ -1,6 +1,9 @@
-import { convertToPointType, RootPointPredicateConfiguration, PointPredicateBaseConfiguration, MAX_POINTS } from "mjqt-scoring";
+import { convertToPointType, pointPredicateIdToLogicOptionsMap, 
+    RootPointPredicateConfiguration, PointPredicateBaseConfiguration, MAX_POINTS, 
+    PointPredicateLogicConfiguration} from "mjqt-scoring";
 import { PointPredicateContent } from "./pointPredicateContent";
 import { pointPredicateIdToContentMap } from "./pointPredicateIdToContentMap"
+import { pointPredicateLogicOptionToContentMap } from "./optionToContentMap";
 import { useState, ReactElement } from "react";
 import { getRouteApi, useRouter } from '@tanstack/react-router'
 
@@ -13,19 +16,24 @@ function PointPredicateConfiguration(props: PointPredicateConfigurationProps) {
     const route = getRouteApi('/config');
     const router = useRouter();
     const rootConfig: RootPointPredicateConfiguration = route.useLoaderData().rootPointPredicateConfig;
+    const logicConfig: PointPredicateLogicConfiguration = rootConfig.pointPredicateLogicConfiguration;
     const base: PointPredicateBaseConfiguration | undefined = rootConfig.getBaseConfiguration(props.pointPredicateId);
     if (!base) {
         return (<></>);
     }
     const baseConfig: PointPredicateBaseConfiguration = base;
-    //const logicConfigOptions: string[] = [...pointPredicateIdToLogicOptionsMap.get(props.pointPredicateId) ?? []];
+
+    const initIncludedPointPredicates = baseConfig.generateIncludedPointPredicates(rootConfig.pointPredicateLogicConfiguration);
+    const logicConfigOptions: string[] = [...pointPredicateIdToLogicOptionsMap.get(props.pointPredicateId) ?? []];
+    const initLogicConfigOptionToVals: Map<string, boolean | undefined> = new Map();
+    logicConfigOptions.forEach(option => initLogicConfigOptionToVals.set(option, logicConfig.getOptionValue(option)));
 
     const [enabled, setEnabled] = useState(baseConfig.enabled);
     const [isBonus, setIsBonus] = useState(baseConfig.isBonus);
     const [points, setPoints] = useState(baseConfig.points + "");
-    const [includedPointPredicates, setIncludedPointPredicates] = useState(baseConfig.generateIncludedPointPredicates(rootConfig.pointPredicateLogicConfiguration));
+    const [includedPointPredicates, setIncludedPointPredicates] = useState(initIncludedPointPredicates);
     const [submitDisabled, setSubmitDisabled] = useState(true);
-    //const [logicConfigOptionValues, setLogicConfigOptionValues] = useState([]);
+    const [logicConfigOptionToValues, setLogicConfigOptionToValues] = useState(initLogicConfigOptionToVals);
 
     function onEnabledChange(event: React.ChangeEvent<HTMLInputElement>) {
         setEnabled(event.currentTarget.checked);
@@ -43,6 +51,20 @@ function PointPredicateConfiguration(props: PointPredicateConfigurationProps) {
 
     function onPointsChange(event: React.ChangeEvent<HTMLInputElement>) {
         setPoints(event.currentTarget.value);
+        if (submitDisabled) {
+            setSubmitDisabled(false);
+        }
+    }
+
+    function onLogicOptionChange(event: React.ChangeEvent<HTMLInputElement>) {
+        const mapCopy: Map<string, boolean | undefined> = new Map();
+        logicConfigOptionToValues.forEach((val, key) => mapCopy.set(key, val));
+        mapCopy.set(event.currentTarget.name, event.currentTarget.checked);
+        setLogicConfigOptionToValues(mapCopy);
+
+        const logicConfigCopy = new PointPredicateLogicConfiguration(mapCopy);
+        setIncludedPointPredicates(baseConfig.generateIncludedPointPredicates(logicConfigCopy));
+
         if (submitDisabled) {
             setSubmitDisabled(false);
         }
@@ -70,6 +92,7 @@ function PointPredicateConfiguration(props: PointPredicateConfigurationProps) {
         
         baseConfig.enabled = enabled;
         baseConfig.isBonus = isBonus;
+        logicConfigOptionToValues.forEach((val, key) => rootConfig.pointPredicateLogicConfiguration.setOptionValue(key, val ?? false));
         router.invalidate();
         setSubmitDisabled(true);
     }
@@ -79,6 +102,8 @@ function PointPredicateConfiguration(props: PointPredicateConfigurationProps) {
         setEnabled(baseConfig.enabled);
         setIsBonus(baseConfig.isBonus);
         setPoints(baseConfig.points + "");
+        setLogicConfigOptionToValues(initLogicConfigOptionToVals);
+        setIncludedPointPredicates(initIncludedPointPredicates);
         setSubmitDisabled(true);
     }
 
@@ -107,6 +132,7 @@ function PointPredicateConfiguration(props: PointPredicateConfigurationProps) {
                     <input type="checkbox" id={isBonusId} checked={isBonus} onChange={onIsBonusChange} />
                 </div>
                 </div>
+                {logicOptionsToElement(logicConfigOptions, logicConfigOptionToValues, onLogicOptionChange)}
                 <div className="config-row">
                 <div>
                     <input type="submit" value="Save Changes" disabled={submitDisabled}/> 
@@ -130,4 +156,27 @@ function includedPointPredicatesToElement(pointPredicateIds: ReadonlySet<string>
         .map(([pointPredicateId, content]) => <li key={pointPredicateId}>{content.title}</li>);
     return includedPointPredicates.length > 0 ? 
     (<div className="included-point-predicates">Includes points from:<ul>{includedPointPredicates}</ul></div>) : <></>;
+}
+
+
+function logicOptionsToElement(logicConfigOptions: string[],
+    logicConfigOptionToVals: Map<string, boolean | undefined>,
+    onLogicOptionChange: (event: React.ChangeEvent<HTMLInputElement>) => void): ReactElement {
+    const optionElements: ReactElement[] = [];
+    for (const option of logicConfigOptions) {
+        const content = pointPredicateLogicOptionToContentMap.get(option);
+        if (!content) {
+            continue;
+        }
+        optionElements.push(<div key={option}>
+            <label htmlFor={option}>{content.optionTitle}: </label>
+            <input type="checkbox" name={option} checked={logicConfigOptionToVals.get(option)} onChange={onLogicOptionChange} />
+            </div>);
+    }
+    if (optionElements.length === 0) {
+        return <></>;
+    }
+    return <div className="config-row">
+        {optionElements}
+    </div>;
 }
