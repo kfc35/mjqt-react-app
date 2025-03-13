@@ -1,6 +1,6 @@
 import './MahjongTile.css'
 import { Tile, GREEN_TILES, REVERSIBLE_TILES, SIMPLE_TILES, TERMINAL_TILES } from 'mjqt-scoring'
-import mahjongTileToUnicodeMap from '../../../content/mahjongTileUnicodeMap'
+import getUnicodeRepresentation from '../../../content/mahjongTileUnicodeMap'
 
 const greenTilesSet: Set<Tile> = new Set(GREEN_TILES);
 const reversibleTilesSet: Set<Tile> = new Set(REVERSIBLE_TILES);
@@ -33,7 +33,7 @@ function MahjongTile(props: MahjongTileProps) {
   return (
     <>
       <button className={classNames.join(" ")} onClick={props.onTileClick} disabled={props.disabled}>
-        {mahjongTileToUnicodeMap.get(props.tile)}
+        {getUnicodeRepresentation(props.tile)}
       </button>
     </>
   )

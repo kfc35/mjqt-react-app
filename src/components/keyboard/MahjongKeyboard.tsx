@@ -8,7 +8,8 @@ import { BAMBOO_TILES, CHARACTER_TILES, CIRCLE_TILES,
     WindDirection,
     MostRecentTileContext,
     isSuitedOrHonorTile,
-    isHongKongTile, HongKongTile
+    isHongKongTile, HongKongTile, analyzeForWinningHands,
+    type SuitedOrHonorTile
  } from "mjqt-scoring"
 import MahjongTile from "./mahjongTile/MahjongTile"
 import { useState, ReactElement } from "react";
@@ -90,7 +91,10 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
             .map(tileOrMeld => tileOrMeld instanceof Tile ? [tileOrMeld] : tileOrMeld.tiles)
             .reduce<Tile[]>((accum, tiles) => accum.concat(tiles), [])
             .filter(tile => isHongKongTile(tile));
-        const nonFlowerTiles = tiles.filter(tile => !isFlowerTile(tile) && isSuitedOrHonorTile(tile));
+        const nonFlowerTiles = tiles
+            .filter(tile => !isFlowerTile(tile))
+            .filter(tile => isSuitedOrHonorTile(tile))
+            .map(tile => tile as SuitedOrHonorTile);
         if (nonFlowerTiles.length < 14) {
             alert("You need at least 14 tiles to submit.");
             return;
@@ -98,6 +102,8 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
         const lastTile = nonFlowerTiles[nonFlowerTiles.length-1];
 
         // TODO going to need to figure out this API to make this easier.
+        const winningHands = analyzeForWinningHands(new Hand(tiles, new MostRecentTileContext(lastTile, true)));
+        console.log(JSON.stringify(winningHands));
         const pointEval = evaluateHand(new Hand(tiles, new MostRecentTileContext(lastTile, true)), 
             (new WinContext.Builder()).build(), 
             new RoundContext(WindDirection.EAST, WindDirection.EAST),

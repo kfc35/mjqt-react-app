@@ -1,5 +1,5 @@
 import { MeldBasedWinningHand, WinningHand, PointEvaluation, PointPredicateResult, PointPredicateSingleSuccessResult, PointPredicateFailureResult } from 'mjqt-scoring'
-import mahjongTileToUnicodeMap from '../../content/mahjongTileUnicodeMap';
+import getUnicodeRepresentation from '../../content/mahjongTileUnicodeMap';
 import { ReactElement } from 'react';
 import { getRouteApi } from '@tanstack/react-router';
 import './ResultsDisplay.css'
@@ -8,14 +8,14 @@ import { subPointPredicateIdToContentMap } from '../../content/subPointPredicate
 
 function ResultsDisplay() {
     const route = getRouteApi('/results');
-    const pointEval: PointEvaluation | undefined = route.useLoaderData().mostRecentPointEvaluation;
-    if (!pointEval) {
+    const pointEvals: PointEvaluation[] = route.useLoaderData().mostRecentPointEvaluations;
+    if (!pointEvals || pointEvals.length === 0) {
         return <div id="empty-results">
             <p>There are no calculator results to display. Your most recent calculator result will appear here.</p>
         </div>
     }
+    const pointEval = pointEvals[0];
     const winningHand = pointEval.winningHand;
-    pointEval.successResults
 
     return <>
         <div className="point-evaluation">
@@ -36,18 +36,20 @@ export default ResultsDisplay
 
 function winningHandToElement(winningHand: WinningHand): ReactElement {
     if (winningHand instanceof MeldBasedWinningHand) {
+        const elements = winningHand.melds.map((meld, index) => 
+            <div className={"tile-grouping meld " + meld.type.toLowerCase()} key={index}>
+                {meld.tiles.map(tile => getUnicodeRepresentation(tile)).join(" ")}
+            </div>);
         return <div className="winning-hand">
-            {winningHand.melds.map(meld => 
-                <div className={"tile-grouping meld " + meld.type.toLowerCase()}>
-                    {meld.tiles.map(tile => mahjongTileToUnicodeMap.get(tile)).join(" ")}
-                </div>).join("\n")}
+            {elements}
             </div>
     } else {
+        const elements = winningHand.tiles.map((tilesList, index) => 
+            <div className="tile-grouping" key={index}>
+                {tilesList.map(tile => getUnicodeRepresentation(tile)).join(" ")}
+            </div>);
         return <div className="winning-hand">
-            {winningHand.tiles.map(tilesList => 
-                <div className="tile-grouping">
-                    {tilesList.map(tile => mahjongTileToUnicodeMap.get(tile)).join(" ")}
-                </div>).join("\n")}
+            {elements}
             </div>
     }
 }
@@ -63,12 +65,12 @@ function printResults(results: PointPredicateResult[]): ReactElement {
             }
         }
         if (result instanceof PointPredicateSingleSuccessResult) {
-            elements.push(<div className="success-result">
+            elements.push(<div className="success-result" key={result.pointPredicateId}>
                 {content.title} - Success
             </div>);
         }
         if (result instanceof PointPredicateFailureResult) {
-            elements.push(<div>
+            elements.push(<div className="failure-result" key={result.pointPredicateId}>
                 {content.title} - Failure
             </div>);
         }
