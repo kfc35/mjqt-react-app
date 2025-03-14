@@ -1,4 +1,4 @@
-import { MeldBasedWinningHand, WinningHand, PointEvaluation, PointPredicateResult, PointPredicateSingleSuccessResult, PointPredicateFailureResult } from 'mjqt-scoring'
+import { MeldBasedWinningHand, WinningHand, PointEvaluation, PointPredicateResult, PointPredicateSingleSuccessResult, PointPredicateFailureResult, type RootPointPredicateConfiguration, MAX_POINTS } from 'mjqt-scoring'
 import getUnicodeRepresentation from '../../content/mahjongTileUnicodeMap';
 import { ReactElement } from 'react';
 import { getRouteApi } from '@tanstack/react-router';
@@ -9,6 +9,7 @@ import { subPointPredicateIdToContentMap } from '../../content/subPointPredicate
 function ResultsDisplay() {
     const route = getRouteApi('/results');
     const pointEvals: PointEvaluation[] = route.useLoaderData().mostRecentPointEvaluations;
+    const rootConfig: RootPointPredicateConfiguration = route.useLoaderData().rootPointPredicateConfig;
     if (!pointEvals || pointEvals.length === 0) {
         return <div id="empty-results">
             <p>There are no calculator results to display. Your most recent calculator result will appear here.</p>
@@ -18,15 +19,13 @@ function ResultsDisplay() {
     const winningHand = pointEval.winningHand;
 
     return <>
-        <div className="point-evaluation">
+        <div id="results-display">
             {winningHandToElement(winningHand)}
             <div className="points">
                 <p>Points: {pointEval.points}</p>
             </div>
             <div className="results">
-                {printResults(pointEval.successResults)}
-                {printResults(pointEval.ignoredResults)}
-                {printResults(pointEval.failedResults)}
+                {printResults(pointEval, rootConfig)}
             </div>
         </div>
     </>
@@ -38,6 +37,7 @@ function winningHandToElement(winningHand: WinningHand): ReactElement {
     if (winningHand instanceof MeldBasedWinningHand) {
         const elements = winningHand.melds.map((meld, index) => 
             <div className={"tile-grouping meld " + meld.type.toLowerCase()} key={index}>
+                <span className="meld-text">{meld.type.toLowerCase()}: </span>
                 {meld.tiles.map(tile => getUnicodeRepresentation(tile)).join(" ")}
             </div>);
         return <div className="winning-hand">
@@ -45,7 +45,7 @@ function winningHandToElement(winningHand: WinningHand): ReactElement {
             </div>
     } else {
         const elements = winningHand.tiles.map((tilesList, index) => 
-            <div className="tile-grouping" key={index}>
+            <div className={"tile-grouping" + (tilesList.length === 2 && tilesList[0].equals(tilesList[1]) ? " pair" : "")} key={index}>
                 {tilesList.map(tile => getUnicodeRepresentation(tile)).join(" ")}
             </div>);
         return <div className="winning-hand">
@@ -54,9 +54,13 @@ function winningHandToElement(winningHand: WinningHand): ReactElement {
     }
 }
 
-function printResults(results: PointPredicateResult[]): ReactElement {
+function printResults(pointEval: PointEvaluation, rootConfig: RootPointPredicateConfiguration): ReactElement {
     const elements: ReactElement[] = [];
-    for (const result of results) {
+    for (const result of pointEval.successResults) {
+        const baseConfig = rootConfig.getBaseConfiguration(result.pointPredicateId);
+        if (!baseConfig) {
+            continue;
+        }
         let content = pointPredicateIdToContentMap.get(result.pointPredicateId);
         if (!content) {
             content = subPointPredicateIdToContentMap.get(result.pointPredicateId);
@@ -64,16 +68,39 @@ function printResults(results: PointPredicateResult[]): ReactElement {
                 continue;
             }
         }
-        if (result instanceof PointPredicateSingleSuccessResult) {
+        if (!pointEval.ignoredPointPredicateIds.has(result.pointPredicateId)) {
+            const points: string = baseConfig.points === MAX_POINTS ? rootConfig.maxPoints + " (max)" : baseConfig.points + "";
             elements.push(<div className="success-result" key={result.pointPredicateId}>
-                {content.title} - Success
+                {content.title} - Success: +{points} pt(s)
             </div>);
         }
-        if (result instanceof PointPredicateFailureResult) {
-            elements.push(<div className="failure-result" key={result.pointPredicateId}>
-                {content.title} - Failure
-            </div>);
+    }
+    for (const result of pointEval.ignoredResults) {
+        let content = pointPredicateIdToContentMap.get(result.pointPredicateId);
+        if (!content) {
+            content = subPointPredicateIdToContentMap.get(result.pointPredicateId);
+            if (!content) {
+                continue;
+            }
         }
+        if (result.success) {
+            elements.push(<div className="ignored-result" key={result.pointPredicateId}>
+                {content.title} - Points ignored (included by other successful result).
+            </div>);
+            continue;
+        }
+    }
+    for (const result of pointEval.failedResults) {
+        let content = pointPredicateIdToContentMap.get(result.pointPredicateId);
+        if (!content) {
+            content = subPointPredicateIdToContentMap.get(result.pointPredicateId);
+            if (!content) {
+                continue;
+            }
+        }
+        elements.push(<div className="failure-result" key={result.pointPredicateId}>
+            {content.title} - Failure
+        </div>);
     }
     return <>
         {elements}
