@@ -1,4 +1,4 @@
-import { MeldBasedWinningHand, WinningHand, PointEvaluation, PointPredicateResult, PointPredicateSingleSuccessResult, PointPredicateFailureResult, type RootPointPredicateConfiguration, MAX_POINTS } from 'mjqt-scoring'
+import { MeldBasedWinningHand, WinningHand, PointEvaluation, type RootPointPredicateConfiguration, MAX_POINTS } from 'mjqt-scoring'
 import getUnicodeRepresentation from '../../content/mahjongTileUnicodeMap';
 import { ReactElement } from 'react';
 import { getRouteApi } from '@tanstack/react-router';

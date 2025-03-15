@@ -3,7 +3,7 @@ import { convertToPointType, pointPredicateIdToLogicOptionsMap,
     PointPredicateLogicConfiguration} from "mjqt-scoring";
 import { PointPredicateContent } from "../../content/pointPredicateContent";
 import { pointPredicateIdToContentMap } from "../../content/pointPredicateIdToContentMap"
-import { pointPredicateLogicOptionToContentMap } from "./optionToContentMap";
+import { pointPredicateLogicOptionToContentMap } from "../../content/optionToContentMap";
 import { useState, ReactElement } from "react";
 import { getRouteApi, useRouter } from '@tanstack/react-router'
 
