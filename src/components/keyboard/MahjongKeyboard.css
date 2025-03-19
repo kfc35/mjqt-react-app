@@ -1,0 +1,26 @@
+div#tile-buttons {
+    width: 100%;
+}
+
+div.button-section {
+    display: inline-block;
+    height: auto;
+    vertical-align: top;
+    padding: 0.1em;
+    margin: 0.1em;
+}
+
+.mahjong-tile {
+    font-size: 3.5vmax;
+    font-variant-emoji: unicode;
+    padding: 0em 0.5vmax 0.2em 0.5vmax;
+    margin: 0.6vmax 0.6vmax 0.6vmax 0.6vmax;
+}
+
+span.mahjong-tile {
+    /* ensure it has the same sizing as button.mahjong-tile, but unclickable */
+    display: inline-block;
+    line-height: normal;
+    /* since buttons have a border, just make the span border transparent. */
+    border: 0.1vmax solid transparent;
+}

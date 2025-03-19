@@ -1,0 +1,34 @@
+.results-display {
+    width: 100%;
+}
+
+span.meld-text {
+    font-size: 2vmax;
+}
+
+.tile-grouping {
+    display: inline-block;
+    margin: 0.5vmax 0.5vmax;
+    border-radius: 8px;
+    border: 0.1vmax solid transparent;
+    padding: 0em 0.5vmax 0.2em 0.5vmax;
+    background-image: linear-gradient(to top right, slategray, black);
+}
+
+.chow {
+    background-image: linear-gradient(to top right, darkcyan, black);
+}
+
+.pong {
+    background-image: linear-gradient(to top right, darkmagenta, black);
+}
+
+.kong {
+    background-image: linear-gradient(to top right, bisque, black);
+}
+
+.winning-hand {
+    display: inline-block;
+    padding: 0.6em 1.2em;
+    font-size: 3.0vmax;
+}
