@@ -75,7 +75,7 @@ const selfDrawContent: PointPredicateContent = {
 const robbingKongContent: PointPredicateContent = {
     title: "Robbing a Kong",
     description: <div className="predicate-description">
-        <p>Your winning tile is the same tile being added to a previously exposed pong during another player's turn.</p>
+        <p>Your winning tile is the same tile being added to a previously exposed pong during another player{"'"}s turn.</p>
         </div>
 };
 
@@ -117,7 +117,7 @@ const earthlyHandContent: PointPredicateContent = {
 const heavenlyHandContent: PointPredicateContent = {
     title: "Heavenly Hand",
     description: <div className="predicate-description">
-        <p>Your seat wind is NOT East and your initial hand with East's first discard is a winning hand.</p>
+        <p>Your seat wind is NOT East and your initial hand with East{"'"}s first discard is a winning hand.</p>
         </div>
 };
 
@@ -152,7 +152,7 @@ const winByMixedDoubleReplacementContent: PointPredicateContent = {
 const concealedHandContent: PointPredicateContent = {
     title: "Concealed Hand",
     description: <div className="predicate-description">
-        <p>Four of your hand's five melds (including your pair) are self drawn.</p>
+        <p>Four of your hand{"'"}s five melds (including your pair) are self drawn.</p>
         <p>You may win via discard to complete any of your melds in order to complete this hand.</p>
         <p>This rule can be customized to only permit you to win via discard when the tile completes your pair.</p>
         </div>
@@ -161,7 +161,7 @@ const concealedHandContent: PointPredicateContent = {
 const selfTripletsContent: PointPredicateContent = {
     title: "Self Triples",
     description: <div className="predicate-description">
-        <p>Your hand's 3-tile melds are all pongs that you never exposed.</p>
+        <p>Your hand{"'"}s 3-tile melds are all pongs that you never exposed.</p>
         <p>This rule can be customized to allow concealed kongs in your hand.</p>
         </div>
 };
@@ -176,7 +176,7 @@ const fullyConcealedHandContent: PointPredicateContent = {
 const meldedHandContent: PointPredicateContent = {
     title: "Melded Hand",
     description: <div className="predicate-description">
-        <p>Your hand's 3-tile melds are all exposed. </p>
+        <p>Your hand{"'"}s 3-tile melds are all exposed. </p>
         <p>This rule can be customized two ways: </p>
         <ul>
             <li>to allow for wins via a self draw (to complete your pair)</li>
@@ -188,7 +188,7 @@ const meldedHandContent: PointPredicateContent = {
 const fullyMeldedHandContent: PointPredicateContent = {
     title: "Fully Melded Hand",
     description: <div className="predicate-description">
-        <p>All of your melds were completed by eating others' discards, and you win by discard.</p>
+        <p>All of your melds were completed by eating others{"'"} discards, and you win by discard.</p>
         </div>
 };
 
@@ -276,7 +276,7 @@ const jadeDragonContent: PointPredicateContent = {
     title: "Jade Dragon",
     description: <div className="predicate-description">
         <ul>
-            <li>Your hand's 3+-tile melds are a mixture of pongs and kongs</li>
+            <li>Your hand{"'"}s 3+-tile melds are a mixture of pongs and kongs</li>
             <li>One of your 3+-tile melds is a pong or kong of the Green Dragon</li>
             <li>All of your other tiles are in the Bamboo Suit</li>
         </ul>
@@ -287,7 +287,7 @@ const rubyDragonContent: PointPredicateContent = {
     title: "Ruby Dragon",
     description: <div className="predicate-description">
         <ul>
-            <li>Your hand's 3+-tile melds are a mixture of pongs and kongs</li>
+            <li>Your hand{"'"}s 3+-tile melds are a mixture of pongs and kongs</li>
             <li>One of your 3+-tile melds is a pong or kong of the Red Dragon</li>
             <li>All of your other tiles are in the Characters Suit</li>
         </ul>
@@ -298,7 +298,7 @@ const pearlDragonContent: PointPredicateContent = {
     title: "Pearl Dragon",
     description: <div className="predicate-description">
         <ul>
-            <li>Your hand's 3+-tile melds are a mixture of pongs and kongs</li>
+            <li>Your hand{"'"}s 3+-tile melds are a mixture of pongs and kongs</li>
             <li>One of your 3+-tile melds is a pong or kong of the White Dragon</li>
             <li>All of your other tiles are in the Circles Suit</li>
         </ul>
@@ -336,7 +336,7 @@ const seatWindPongKongContent: PointPredicateContent = {
 const prevailingWindPongKongContent: PointPredicateContent = {
     title: "Prevailing Pong/Kong",
     description: <div className="predicate-description">
-        <p>Your hand contains a pong/kong of the round's prevailing wind.</p>
+        <p>Your hand contains a pong/kong of the round{"'"}s prevailing wind.</p>
         </div>
 };
 
@@ -371,7 +371,7 @@ const bigFourWindsContent: PointPredicateContent = {
 const allHonorsAndTerminalsContent: PointPredicateContent = {
     title: "All Honors And Terminals",
     description: <div className="predicate-description">
-        <p>Your hand consists of only Honors (Dragons & Winds) and Terminals (1's & 9's).</p>
+        <p>Your hand consists of only Honors (Dragons & Winds) and Terminals (1{"'"}s & 9{"'"}s).</p>
         </div>
 };
 
@@ -399,14 +399,14 @@ const allHonorsContent: PointPredicateContent = {
 const allTerminalsContent: PointPredicateContent = {
     title: "All Terminals",
     description: <div className="predicate-description">
-        <p>Your hand consists of only Terminals (1's and 9's).</p>
+        <p>Your hand consists of only Terminals (1{"'"}s and 9{"'"}s).</p>
         </div>
 };
 
 const allSimplesContent: PointPredicateContent = {
     title: "All Simples",
     description: <div className="predicate-description">
-        <p>Your hand consists of only Simples (tiles 2's through 8's).</p>
+        <p>Your hand consists of only Simples (tiles 2{"'"}s through 8{"'"}s).</p>
         </div>
 };
 

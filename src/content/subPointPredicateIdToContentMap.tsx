@@ -10,24 +10,24 @@ const onePairContent: PointPredicateContent = {
         </div>,
 };
 
-const fourChowsContent: PointPredicateContent = {
-    title: "Four Chows",
+const atLeastNumMeldsMinusOneAreChowsContent: PointPredicateContent = {
+    title: "Melds are Chows",
     description: <div className="subpredicate-description">
-        <p>Your hand has exactly four chows (consecutive runs).</p>
+        <p>Your hand has all chows (consecutive runs), excluding the pair.</p>
         </div>,
 };
 
-const fourKongsContent: PointPredicateContent = {
-    title: "Four Kongs",
+const atLeastNumMeldsMinusOneAreKongsContent: PointPredicateContent = {
+    title: "Melds are Kongs",
     description: <div className="subpredicate-description">
-        <p>Your hand has exactly four kongs (four-of-a-kinds).</p>
+        <p>Your hand has all kongs (four-of-a-kinds), excluding the pair.</p>
         </div>,
 };
 
-const fourPongsKongsContent: PointPredicateContent = {
-    title: "Four Pongs/Kongs",
+const atLeastNumMeldsMinusOneArePongsAndKongsContent: PointPredicateContent = {
+    title: "Melds are Pongs/Kongs",
     description: <div className="subpredicate-description">
-        <p>Your hand has exactly four melds that are a mix of pongs and kongs (three-of-a-kinds and four-of-a-kinds).</p>
+        <p>Your hand is made up of a mix of pongs and kongs (three-of-a-kinds and four-of-a-kinds), excluding the pair.</p>
         </div>
 };
 
@@ -45,24 +45,40 @@ const fourConcealedPongsKongsContent: PointPredicateContent = {
         </div>
 };
 
-const fourConcealedNonPairMeldsContent: PointPredicateContent = {
-    title: "Four Concealed Non-Pair Melds",
+const ifThereIsOnlyOneExposedMeldThenItIsMeldWithLastTileContent: PointPredicateContent = {
+    title: "If there is only one exposed meld, then it is the meld with last (winning) tile.",
     description: <div className="subpredicate-description">
-        <p>Your hand has exactly four concealed melds, none of which are pairs.</p>
+        <p>If only one of your melds is exposed, that meld must be the meld you completed for the win.</p>
+        <p>This rule follows the the mathematical truth table for implication (if p then q).</p>
+        <p>This means that, if do not have any exposed melds, or more than one exposed meld, this evaluates to true.</p>
         </div>
 };
 
-const fourConcealedMeldsContent: PointPredicateContent = {
-    title: "Four Concealed Melds",
+const allMeldsAreConcealedContent: PointPredicateContent = {
+    title: "All Melds are Concealed",
     description: <div className="subpredicate-description">
-        <p>Your hand has exactly four concealed melds. A self-drawn pair counts as a concealed meld.</p>
+        <p>All of your melds are concealed.</p>
         </div>
 };
 
-const fourExposedNonPairMeldsContent: PointPredicateContent = {
-    title: "Four Exposed Non-Pair Melds",
+const atLeastNumMeldsMinusOneAreConcealedContent: PointPredicateContent = {
+    title: "At least all but one of your melds are Concealed Melds",
     description: <div className="subpredicate-description">
-        <p>Your hand has exactly four exposed melds, none of which are pairs.</p>
+        <p>Either all your melds are concealed, or all but one of your melds are concealed.</p>
+        </div>
+};
+
+const allMeldsAreExposedContent: PointPredicateContent = {
+    title: "All Melds are exposed",
+    description: <div className="subpredicate-description">
+        <p>All of your melds are exposed.</p>
+        </div>
+};
+
+const allNonPairMeldsAreExposedContent: PointPredicateContent = {
+    title: "All Non-Pair Melds are exposed",
+    description: <div className="subpredicate-description">
+        <p>All of your non-pair melds (chows, pongs, kongs) are exposed.</p>
         </div>
 };
 
@@ -146,7 +162,7 @@ const allOneSuitWithSufficientTileQuantitiesForNineGatesContent: PointPredicateC
         <p>Your hand: </p>
         <ul>
         <li>is composed of tiles all from the same suit</li>
-        <li>has the correct tile quantities (1112345678999 + a duplicate) for the "Nine Gates" special hand.</li>
+        <li>has the correct tile quantities (1112345678999 + a duplicate) for the {"\""}Nine Gates{"\""} special hand.</li>
         </ul>
         </div>
 };
@@ -283,14 +299,16 @@ const notSeatWindIsEastContent: PointPredicateContent = {
 };
 
 subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_ONE_PAIR, onePairContent);
-subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_CONTAINS_FOUR_CHOWS, fourChowsContent);
-subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_CONTAINS_FOUR_KONGS, fourKongsContent);
-subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_CONTAINS_FOUR_PONGS_AND_KONGS, fourPongsKongsContent);
+subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_AT_LEAST_NUM_MELDS_MINUS_ONE_ARE_CHOWS, atLeastNumMeldsMinusOneAreChowsContent);
+subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_AT_LEAST_NUM_MELDS_MINUS_ONE_ARE_KONGS, atLeastNumMeldsMinusOneAreKongsContent);
+subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_AT_LEAST_NUM_MELDS_MINUS_ONE_ARE_PONGS_AND_KONGS, atLeastNumMeldsMinusOneArePongsAndKongsContent);
 subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_CONTAINS_FOUR_CONCEALED_PONGS, fourConcealedPongsContent);
 subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_CONTAINS_FOUR_CONCEALED_PONGS_AND_KONGS, fourConcealedPongsKongsContent);
-subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_CONTAINS_FOUR_CONCEALED_NON_PAIR_MELDS, fourConcealedNonPairMeldsContent);
-subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_CONTAINS_FOUR_CONCEALED_MELDS, fourConcealedMeldsContent);
-subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_CONTAINS_FOUR_EXPOSED_NON_PAIR_MELDS, fourExposedNonPairMeldsContent);
+subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_IF_THERE_IS_ONLY_ONE_EXPOSED_MELD_THEN_IT_IS_MELD_WITH_LAST_TILE, ifThereIsOnlyOneExposedMeldThenItIsMeldWithLastTileContent);
+subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_ALL_MELDS_ARE_CONCEALED, allMeldsAreConcealedContent);
+subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_AT_LEAST_NUM_MELDS_MINUS_ONE_ARE_CONCEALED, atLeastNumMeldsMinusOneAreConcealedContent);
+subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_ALL_MELDS_ARE_EXPOSED, allMeldsAreExposedContent);
+subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_ALL_NON_PAIR_MELDS_ARE_EXPOSED, allNonPairMeldsAreExposedContent);
 subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_HAND_CONTAINS_NO_SUITS, handContainsNoSuitsContent);
 subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_HAND_CONTAINS_ONE_SUIT, handContainsOneSuitContent);
 subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_HAND_CONTAINS_MORE_THAN_ONE_SUIT, handContainsMoreThanOneSuitContent);
@@ -300,7 +318,6 @@ subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_IF_LAST_TILE_W
 subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_IF_LAST_TILE_WAS_SELF_DRAWN_THEN_IT_COMPLETED_PAIR, ifLastTileWasSelfDrawnThenItCompletedPair);
 subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_LAST_TILE_COMPLETED_PAIR, lastTileCompletedPairContent);
 subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_THREE_WINDS_PONG_KONG, threeWindsPongKongContent);
-subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_TWO_DRAGONS_PONG_KONG, twoDragonsPongKongContent);
 subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_TWO_DRAGONS_PONG_KONG, twoDragonsPongKongContent);
 subPointPredicateIdToContentMap.set(PointPredicateID.SUBPREDICATE_ALL_ONE_SUIT_WITH_SUFFICIENT_TILE_QUANTITIES_FOR_NINE_GATES, 
     allOneSuitWithSufficientTileQuantitiesForNineGatesContent);
