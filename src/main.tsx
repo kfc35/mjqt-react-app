@@ -15,8 +15,11 @@ const initContext = {
   mostRecentPointEvaluations: []
 };
 
+// deployment to github pages requires this basepath
+const basePath = '/mjqt-react-app/';
+
 // Create a new router instance
-const router = createRouter({ routeTree, context: initContext })
+const router = createRouter({ routeTree, context: initContext, basepath: basePath })
 
 // Register the router instance for type safety
 declare module '@tanstack/react-router' {
