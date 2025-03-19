@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@tanstack/react-router": "^1.112.0",
-    "mjqt-scoring": "^0.1.22",
+    "mjqt-scoring": "^0.1.24",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -22,7 +22,8 @@
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^1.3.2",
-    "eslint": "^9.19.0",
+    "eslint": "^9.22.0",
+    "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.18",
     "globals": "^15.14.0",
