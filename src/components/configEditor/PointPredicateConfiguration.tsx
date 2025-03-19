@@ -1,37 +1,35 @@
-import { convertToPointType, pointPredicateIdToLogicOptionsMap, 
-    RootPointPredicateConfiguration, PointPredicateBaseConfiguration, MAX_POINTS, 
+import { pointPredicateIdToLogicOptionsMap, 
+    RootPointPredicateConfiguration, 
     PointPredicateLogicConfiguration} from "mjqt-scoring";
 import { PointPredicateContent } from "../../content/pointPredicateContent";
 import { pointPredicateIdToContentMap } from "../../content/pointPredicateIdToContentMap"
 import { pointPredicateLogicOptionToContentMap } from "../../content/optionToContentMap";
 import { useState, ReactElement } from "react";
-import { getRouteApi, useRouter } from '@tanstack/react-router'
+import { getRouteApi } from '@tanstack/react-router'
 
 interface PointPredicateConfigurationProps {
     pointPredicateId: string
     maxPoints: number
+    generateIncludedPointPredicates: (logicConfig: PointPredicateLogicConfiguration) => ReadonlySet<string>
+    initEnabled: boolean
+    initIsBonus: boolean
+    initPoints: string
+    onPointPredicateConfigSubmit: (points: string, enabled: boolean, isBonus: boolean, 
+        logicConfigOptionToVals: Map<string, boolean | undefined>, predicateTitle: string) => boolean
 }
 
 function PointPredicateConfiguration(props: PointPredicateConfigurationProps) {
     const route = getRouteApi('/config');
-    const router = useRouter();
     const rootConfig: RootPointPredicateConfiguration = route.useLoaderData().rootPointPredicateConfig;
     const logicConfig: PointPredicateLogicConfiguration = rootConfig.pointPredicateLogicConfiguration;
-    const base: PointPredicateBaseConfiguration | undefined = rootConfig.getBaseConfiguration(props.pointPredicateId);
-    if (!base) {
-        return (<></>);
-    }
-    const baseConfig: PointPredicateBaseConfiguration = base;
-
-    const initIncludedPointPredicates = baseConfig.generateIncludedPointPredicates(rootConfig.pointPredicateLogicConfiguration);
     const logicConfigOptions: string[] = [...pointPredicateIdToLogicOptionsMap.get(props.pointPredicateId) ?? []];
     const initLogicConfigOptionToVals: Map<string, boolean | undefined> = new Map();
     logicConfigOptions.forEach(option => initLogicConfigOptionToVals.set(option, logicConfig.getOptionValue(option)));
 
-    const [enabled, setEnabled] = useState(baseConfig.enabled);
-    const [isBonus, setIsBonus] = useState(baseConfig.isBonus);
-    const [points, setPoints] = useState(baseConfig.points + "");
-    const [includedPointPredicates, setIncludedPointPredicates] = useState(initIncludedPointPredicates);
+    const [enabled, setEnabled] = useState(props.initEnabled);
+    const [isBonus, setIsBonus] = useState(props.initIsBonus);
+    const [points, setPoints] = useState(props.initPoints);
+    const [includedPointPredicates, setIncludedPointPredicates] = useState(props.generateIncludedPointPredicates(rootConfig.pointPredicateLogicConfiguration));
     const [submitDisabled, setSubmitDisabled] = useState(true);
     const [logicConfigOptionToValues, setLogicConfigOptionToValues] = useState(initLogicConfigOptionToVals);
 
@@ -63,7 +61,7 @@ function PointPredicateConfiguration(props: PointPredicateConfigurationProps) {
         setLogicConfigOptionToValues(mapCopy);
 
         const logicConfigCopy = new PointPredicateLogicConfiguration(mapCopy);
-        setIncludedPointPredicates(baseConfig.generateIncludedPointPredicates(logicConfigCopy));
+        setIncludedPointPredicates(props.generateIncludedPointPredicates(logicConfigCopy));
 
         if (submitDisabled) {
             setSubmitDisabled(false);
@@ -78,32 +76,19 @@ function PointPredicateConfiguration(props: PointPredicateConfigurationProps) {
 
     function submit(event: React.FormEvent) {
         event.preventDefault();
-
-        const pts = convertToPointType(points);
-        if (!pts || (pts !== MAX_POINTS && pts < 0)) {
-            alert(pointPredicateContent.title + " does not have a valid Points value. " +
-                "It must be 0, a positive number, or 'MAX'.");
-            return;
-        } else if (pts !== MAX_POINTS && pts > rootConfig.maxPoints) {
-            baseConfig.points = MAX_POINTS;
-        } else {
-            baseConfig.points = pts;
+        const success = props.onPointPredicateConfigSubmit(points, enabled, isBonus, logicConfigOptionToValues, pointPredicateContent.title);
+        if (success) {
+            setSubmitDisabled(true);
         }
-        
-        baseConfig.enabled = enabled;
-        baseConfig.isBonus = isBonus;
-        logicConfigOptionToValues.forEach((val, key) => rootConfig.pointPredicateLogicConfiguration.setOptionValue(key, val ?? false));
-        router.invalidate();
-        setSubmitDisabled(true);
     }
 
     function discard(event: React.FormEvent) {
         event.preventDefault();
-        setEnabled(baseConfig.enabled);
-        setIsBonus(baseConfig.isBonus);
-        setPoints(baseConfig.points + "");
+        setEnabled(props.initEnabled);
+        setIsBonus(props.initIsBonus);
+        setPoints(props.initPoints);
         setLogicConfigOptionToValues(initLogicConfigOptionToVals);
-        setIncludedPointPredicates(initIncludedPointPredicates);
+        setIncludedPointPredicates(props.generateIncludedPointPredicates(rootConfig.pointPredicateLogicConfiguration));
         setSubmitDisabled(true);
     }
 
@@ -152,7 +137,7 @@ export default PointPredicateConfiguration
 function includedPointPredicatesToElement(pointPredicateIds: ReadonlySet<string>): ReactElement {
     const includedPointPredicates = [...pointPredicateIds]
         .map(pointPredicateId => [pointPredicateId, pointPredicateIdToContentMap.get(pointPredicateId)] as [string, PointPredicateContent])
-        .filter(([_, content]) => !!content)
+        .filter(([, content]) => !!content)
         .map(([pointPredicateId, content]) => <li key={pointPredicateId}>{content.title}</li>);
     return includedPointPredicates.length > 0 ? 
     (<div className="included-point-predicates">Includes points from:<ul>{includedPointPredicates}</ul></div>) : <></>;

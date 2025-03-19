@@ -2,14 +2,9 @@ import './MahjongKeyboard.css'
 import { BAMBOO_TILES, CHARACTER_TILES, CIRCLE_TILES,
     WIND_TILES, DRAGON_TILES, GENTLEMEN_TILES, SEASON_TILES, Tile, Meld,
     isFlowerTile, maxQuantityPerFlowerTile, maxQuantityPerNonFlowerTile,
-    RootPointPredicateConfiguration, evaluateHand, Hand,
-    WinContext,
-    RoundContext,
-    WindDirection,
-    MostRecentTileContext,
-    isSuitedOrHonorTile,
-    isHongKongTile, HongKongTile, analyzeForWinningHands,
-    type SuitedOrHonorTile
+    RootPointPredicateConfiguration, evaluateHandForHighestPossiblePointEvaluation, Hand,
+    WinContext, RoundContext, WindDirection, MostRecentTileContext,
+    isSuitedOrHonorTile, isHongKongTile, HongKongTile, analyzeForWinningHands, SuitedOrHonorTile,
  } from "mjqt-scoring"
 import MahjongTile from "./mahjongTile/MahjongTile"
 import { useState, ReactElement } from "react";
@@ -91,20 +86,19 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
             .map(tileOrMeld => tileOrMeld instanceof Tile ? [tileOrMeld] : tileOrMeld.tiles)
             .reduce<Tile[]>((accum, tiles) => accum.concat(tiles), [])
             .filter(tile => isHongKongTile(tile));
-        const nonFlowerTiles = tiles
+        const suitedOrHonorTiles: SuitedOrHonorTile[] = tiles
             .filter(tile => !isFlowerTile(tile))
-            .filter(tile => isSuitedOrHonorTile(tile))
-            .map(tile => tile as SuitedOrHonorTile);
-        if (nonFlowerTiles.length < 14) {
+            .filter(tile => isSuitedOrHonorTile(tile));
+        if (suitedOrHonorTiles.length < 14) {
             alert("You need at least 14 tiles to submit.");
             return;
         }
-        const lastTile = nonFlowerTiles[nonFlowerTiles.length-1];
+        const lastTile = suitedOrHonorTiles[suitedOrHonorTiles.length-1];
 
         // TODO going to need to figure out this API to make this easier.
         const winningHands = analyzeForWinningHands(new Hand(tiles, new MostRecentTileContext(lastTile, true)));
         console.log(JSON.stringify(winningHands));
-        const pointEval = evaluateHand(new Hand(tiles, new MostRecentTileContext(lastTile, true)), 
+        const pointEval = evaluateHandForHighestPossiblePointEvaluation(new Hand(tiles, new MostRecentTileContext(lastTile, true)), 
             (new WinContext.Builder()).build(), 
             new RoundContext(WindDirection.EAST, WindDirection.EAST),
             props.rootConfig);
@@ -113,8 +107,8 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
         }
         if (pointEval) {
             loaderData.mostRecentPointEvaluations.push(pointEval);
-            router.invalidate();
-            router.navigate({ to: '/results'});
+            void router.invalidate();
+            void router.navigate({ to: '/results'});
         } else {
             alert("Unsuccessful result. Check your hand and try again.");
             return

@@ -56,7 +56,7 @@ function winningHandToElement(winningHand: WinningHand): ReactElement {
 
 function printResults(pointEval: PointEvaluation, rootConfig: RootPointPredicateConfiguration): ReactElement {
     const elements: ReactElement[] = [];
-    for (const result of pointEval.successResults) {
+    for (const result of pointEval.successUnignoredResults) {
         const baseConfig = rootConfig.getBaseConfiguration(result.pointPredicateId);
         if (!baseConfig) {
             continue;
@@ -90,7 +90,7 @@ function printResults(pointEval: PointEvaluation, rootConfig: RootPointPredicate
             continue;
         }
     }
-    for (const result of pointEval.failedResults) {
+    for (const result of pointEval.failedUnignoredResults) {
         let content = pointPredicateIdToContentMap.get(result.pointPredicateId);
         if (!content) {
             content = subPointPredicateIdToContentMap.get(result.pointPredicateId);

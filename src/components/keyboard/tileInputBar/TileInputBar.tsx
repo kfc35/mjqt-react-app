@@ -43,7 +43,7 @@ function PlaceholderInputTile(): ReactElement {
 
 function convertFlowerTilesToReactElements(props: TileInputBarProps): ReactElement[] {
   return props.tilesAndMelds.map((tileOrMeld, index) => [tileOrMeld, index] as [Tile | Meld, number])
-    .filter(([tileOrMeld, _]) => tileOrMeld instanceof Tile && isFlowerTile(tileOrMeld))
+    .filter(([tileOrMeld,]) => tileOrMeld instanceof Tile && isFlowerTile(tileOrMeld))
     .map(([tile, index]) => [tile, index] as [Tile, number])
     .map(([tile, index]) => {
       const key = ("tile-input-index-" + index).toLowerCase();
