@@ -10,6 +10,7 @@ export interface CalculatorContext {
   rootPointPredicateConfig: RootPointPredicateConfiguration
   mostRecentPointEvaluations: PointEvaluation[]
 }
+
 const initContext = { 
   rootPointPredicateConfig: defaultRootPointPredicateConfiguration.clone(),
   mostRecentPointEvaluations: []

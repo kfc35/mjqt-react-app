@@ -8,9 +8,10 @@ const simpleTilesSet: Set<Tile> = new Set(SIMPLE_TILES);
 const terminalTilesSet: Set<Tile> = new Set(TERMINAL_TILES);
 
 interface MahjongTileProps {
-  tile: Tile;
-  onTileClick?: () => void;
-  disabled?: boolean;
+  tile: Tile
+  onTileClick?: () => void
+  disabled?: boolean
+  selected?: boolean
 }
 
 function MahjongTile(props: MahjongTileProps) {
@@ -27,6 +28,9 @@ function MahjongTile(props: MahjongTileProps) {
   }
   if (reversibleTilesSet.has(props.tile)) {
     classNames.push("reversible-tile");
+  }
+  if (props.selected) {
+    classNames.push("selected")
   }
   const tileToCssClassName = (props.tile.group + "-" + props.tile.value).toLowerCase();
   classNames.push(tileToCssClassName);
