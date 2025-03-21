@@ -23,6 +23,7 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
     const [clearDisabled, setClearDisabled] = useState(true);
     const [roundContext, setRoundContext] = useState(new RoundContext(WindDirection.EAST, WindDirection.EAST));
     const [winContext, setWinContext] = useState(new WinContext.Builder().build());
+    const [lastInputtedTileIsSelfDrawn, setLastInputtedTileIsSelfDrawn] = useState(true);
     //const [meldSelectorMode, setMeldSelectorMode] = useState(undefined);
     const router = useRouter();
     const route = getRouteApi('/');
@@ -46,7 +47,11 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
         setWinContext(newWinContext);
     }
 
-    function createOnTileClickPush(tile: Tile) {
+    function onLastInputtedTileIsSelfDrawnChange(event: React.ChangeEvent<HTMLInputElement>) {
+        setLastInputtedTileIsSelfDrawn(event.currentTarget.checked);
+    }
+
+    function createOnTileClickPushToTilesAndMelds(tile: Tile) {
         return () => {
             const nextTilesAndMelds = [...tilesAndMelds, tile];
             setTilesAndMelds(nextTilesAndMelds);
@@ -65,7 +70,7 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
         };
     }
 
-    function createOnTileClickSplice(index: number) {
+    function createOnTileClickSpliceFromTilesAndMelds(index: number) {
         return () => {
             const nextTilesAndMelds = [...tilesAndMelds];
             nextTilesAndMelds.splice(index, 1);
@@ -98,7 +103,7 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
         const elements: ReactElement[] = [];
         for (const tile of tiles) {
             const key = (tile.group + "-" + tile.value).toLowerCase();
-            elements.push(<MahjongTile tile={tile} key={key} onTileClick={createOnTileClickPush(tile)} 
+            elements.push(<MahjongTile tile={tile} key={key} onTileClick={createOnTileClickPushToTilesAndMelds(tile)} 
                 disabled={tileButtonDisabled(tile)} />);
         }
         return elements;
@@ -118,10 +123,9 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
         }
         const lastTile = suitedOrHonorTiles[suitedOrHonorTiles.length-1];
 
-        // TODO going to need to figure out this API to make this easier.
-        const winningHands = analyzeForWinningHands(new Hand(tiles, new MostRecentTileContext(lastTile, true)));
+        const winningHands = analyzeForWinningHands(new Hand(tiles, new MostRecentTileContext(lastTile, lastInputtedTileIsSelfDrawn)));
         console.log(JSON.stringify(winningHands));
-        const pointEval = evaluateHandForHighestPossiblePointEvaluation(new Hand(tiles, new MostRecentTileContext(lastTile, true)), 
+        const pointEval = evaluateHandForHighestPossiblePointEvaluation(new Hand(tiles, new MostRecentTileContext(lastTile, lastInputtedTileIsSelfDrawn)), 
             winContext, 
             roundContext,
             props.rootConfig);
@@ -215,8 +219,12 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
 
     return (
     <>
-        <TileInputBar tilesAndMelds={tilesAndMelds} createOnTileClickSplice={createOnTileClickSplice} />
+        <TileInputBar tilesAndMelds={tilesAndMelds} createOnTileClickSplice={createOnTileClickSpliceFromTilesAndMelds} />
         <div>
+            <div id="last-inputted-tile-config">
+            <label htmlFor="lastInputtedTileIsSelfDrawn">Last Inputted Tile is Self Drawn: </label>
+            <input type="checkbox" id="lastInputtedTileIsSelfDrawn" checked={lastInputtedTileIsSelfDrawn} onChange={onLastInputtedTileIsSelfDrawnChange} />
+            </div>
             <button id="calculator-submit" onClick={onSubmit} disabled={submitDisabled}>Submit</button>
             {'     '}
             <button id="calculator-clear" onClick={onClear} disabled={clearDisabled}>Clear</button>
