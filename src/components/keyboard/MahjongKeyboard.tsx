@@ -11,6 +11,7 @@ import { useState, ReactElement } from "react";
 import { useRouter, getRouteApi } from '@tanstack/react-router';
 import TileInputBar from './tileInputBar/TileInputBar';
 import RoundContextSelector from './roundContextSelector/RoundContextSelector';
+import WinContextEditor from './winContextEditor/WinContextEditor';
 
 interface MahjongKeyboardProps {
     rootConfig: RootPointPredicateConfiguration
@@ -21,6 +22,7 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
     const [submitDisabled, setSubmitDisabled] = useState(true);
     const [clearDisabled, setClearDisabled] = useState(true);
     const [roundContext, setRoundContext] = useState(new RoundContext(WindDirection.EAST, WindDirection.EAST));
+    const [winContext, setWinContext] = useState(new WinContext.Builder().build());
     //const [meldSelectorMode, setMeldSelectorMode] = useState(undefined);
     const router = useRouter();
     const route = getRouteApi('/');
@@ -38,6 +40,10 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
             const newRoundContext = new RoundContext(prevailingWind, roundContext.seatWind);
             setRoundContext(newRoundContext);
         };
+    }
+
+    function onWinContextUpdate(newWinContext: WinContext) {
+        setWinContext(newWinContext);
     }
 
     function createOnTileClickPush(tile: Tile) {
@@ -116,7 +122,7 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
         const winningHands = analyzeForWinningHands(new Hand(tiles, new MostRecentTileContext(lastTile, true)));
         console.log(JSON.stringify(winningHands));
         const pointEval = evaluateHandForHighestPossiblePointEvaluation(new Hand(tiles, new MostRecentTileContext(lastTile, true)), 
-            (new WinContext.Builder()).build(), 
+            winContext, 
             roundContext,
             props.rootConfig);
         if (loaderData.mostRecentPointEvaluations.length > 0) {
@@ -212,7 +218,7 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
         <TileInputBar tilesAndMelds={tilesAndMelds} createOnTileClickSplice={createOnTileClickSplice} />
         <div>
             <button id="calculator-submit" onClick={onSubmit} disabled={submitDisabled}>Submit</button>
-            { }
+            {'     '}
             <button id="calculator-clear" onClick={onClear} disabled={clearDisabled}>Clear</button>
         </div>
         <div id="tile-buttons">
@@ -235,6 +241,7 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
         </div>
         <RoundContextSelector roundContext={roundContext} createOnTileClickUpdateSeatWind={createOnTileClickUpdateSeatWind} 
             createOnTileClickUpdatePrevailingWind={createOnTileClickUpdatePrevailingWind} />
+        <WinContextEditor winContext={winContext} onWinContextUpdate={onWinContextUpdate} />
     </>
     )
 }
