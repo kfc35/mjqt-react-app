@@ -37,3 +37,7 @@
 .reversible-tile:disabled {
     background-image: linear-gradient(to top right, black, black);
 }
+
+.selected {
+    outline: 4px auto -webkit-focus-ring-color;
+}
