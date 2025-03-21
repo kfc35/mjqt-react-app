@@ -57,7 +57,7 @@ function PointPredicateConfiguration(props: PointPredicateConfigurationProps) {
     function onLogicOptionChange(event: React.ChangeEvent<HTMLInputElement>) {
         const mapCopy: Map<string, boolean | undefined> = new Map();
         logicConfigOptionToValues.forEach((val, key) => mapCopy.set(key, val));
-        mapCopy.set(event.currentTarget.name, event.currentTarget.checked);
+        mapCopy.set(event.currentTarget.id, event.currentTarget.checked);
         setLogicConfigOptionToValues(mapCopy);
 
         const logicConfigCopy = new PointPredicateLogicConfiguration(mapCopy);
@@ -155,7 +155,7 @@ function logicOptionsToElement(logicConfigOptions: string[],
         }
         optionElements.push(<div key={option}>
             <label htmlFor={option}>{content.optionTitle}: </label>
-            <input type="checkbox" name={option} checked={logicConfigOptionToVals.get(option)} onChange={onLogicOptionChange} />
+            <input type="checkbox" id={option} checked={logicConfigOptionToVals.get(option)} onChange={onLogicOptionChange} />
             </div>);
     }
     if (optionElements.length === 0) {
