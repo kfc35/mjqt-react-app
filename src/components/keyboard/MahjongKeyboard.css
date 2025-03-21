@@ -24,3 +24,8 @@ span.mahjong-tile {
     /* since buttons have a border, just make the span border transparent. */
     border: 0.1vmax solid transparent;
 }
+
+#last-inputted-tile-config {
+    display: inline-block;
+    margin: 0 0.5vmax;
+}
