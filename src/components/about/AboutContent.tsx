@@ -1,6 +1,4 @@
 import './AboutContent.css';
-import getUnicodeRepresentation from '../../content/mahjongTileUnicodeMap';
-import { WHITE_DRAGON } from 'mjqt-scoring';
 
 function AboutContent() {
     return <>
