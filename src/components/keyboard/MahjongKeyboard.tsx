@@ -9,9 +9,11 @@ import { BAMBOO_TILES, CHARACTER_TILES, CIRCLE_TILES,
 import MahjongTile from "./mahjongTile/MahjongTile"
 import { useState, ReactElement } from "react";
 import { useRouter, getRouteApi } from '@tanstack/react-router';
+import { MeldMode } from './meldModeSelector/MeldMode';
 import TileInputBar from './tileInputBar/TileInputBar';
 import RoundContextSelector from './roundContextSelector/RoundContextSelector';
 import WinContextEditor from './winContextEditor/WinContextEditor';
+import MeldModeSelector from './meldModeSelector/MeldModeSelector';
 
 interface MahjongKeyboardProps {
     rootConfig: RootPointPredicateConfiguration
@@ -24,7 +26,7 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
     const [roundContext, setRoundContext] = useState(new RoundContext(WindDirection.EAST, WindDirection.EAST));
     const [winContext, setWinContext] = useState(new WinContextBuilder().build());
     const [lastInputtedTileIsSelfDrawn, setLastInputtedTileIsSelfDrawn] = useState(true);
-    //const [meldSelectorMode, setMeldSelectorMode] = useState(undefined);
+    const [meldMode, setMeldMode] = useState<MeldMode | undefined>(undefined);
     const router = useRouter();
     const route = getRouteApi('/');
     const loaderData = route.useLoaderData();
@@ -41,6 +43,12 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
             const newRoundContext = new RoundContext(prevailingWind, roundContext.seatWind);
             setRoundContext(newRoundContext);
         };
+    }
+
+    function createOnButtonClickSetMeldMode(newMeldMode: MeldMode | undefined) {
+        return () => {
+            setMeldMode(newMeldMode);
+        }
     }
 
     function onWinContextUpdate(newWinContext: WinContext) {
@@ -231,6 +239,7 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
             <button id="calculator-clear" onClick={onClear} disabled={clearDisabled}>Clear</button>
             </div>
         </div>
+        <MeldModeSelector meldMode={meldMode} createOnButtonClickSetMeldMode={createOnButtonClickSetMeldMode}/>
         <div id="tile-buttons">
             <div className="button-section" id="flower-tile-buttons">
                 <h3>Flower Tiles</h3>
