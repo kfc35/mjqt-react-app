@@ -219,13 +219,13 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
 
     return (
     <>
+        <div className="sticky-section">
         <TileInputBar tilesAndMelds={tilesAndMelds} createOnTileClickSplice={createOnTileClickSpliceFromTilesAndMelds} />
-        <div>
             <div id="last-inputted-tile-config">
             <label htmlFor="lastInputtedTileIsSelfDrawn">Last Inputted Tile is Self Drawn: </label>
             <input type="checkbox" id="lastInputtedTileIsSelfDrawn" checked={lastInputtedTileIsSelfDrawn} onChange={onLastInputtedTileIsSelfDrawnChange} />
             </div>
-            <div>
+            <div id="calculator-submit-clear">
             <button id="calculator-submit" onClick={onSubmit} disabled={submitDisabled}>Submit</button>
             {'     '}
             <button id="calculator-clear" onClick={onClear} disabled={clearDisabled}>Clear</button>
