@@ -61,7 +61,9 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
 
     function createOnTileClickPushToTilesAndMelds(tile: Tile) {
         return () => {
-            const numTiles = tilesAndMelds.map(tileOrMeld => tileOrMeld instanceof Meld ? tileOrMeld.tiles.length : 1)
+            const numTiles = tilesAndMelds
+                .filter(tileOrMeld => tileOrMeld instanceof Meld || !isFlowerTile(tileOrMeld))
+                .map(tileOrMeld => tileOrMeld instanceof Meld ? tileOrMeld.tiles.length : 1)
                 .reduce<number>((num, accum) => num + accum, 0);
             if (numTiles === 18) {
                 alert("The max number of non flower tiles in your hand is 18. You cannot add any more tiles.");
