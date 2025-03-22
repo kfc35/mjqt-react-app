@@ -4,7 +4,7 @@ import { BAMBOO_TILES, CHARACTER_TILES, CIRCLE_TILES,
     isFlowerTile, maxQuantityPerFlowerTile, maxQuantityPerNonFlowerTile,
     RootPointPredicateConfiguration, evaluateHandForHighestPossiblePointEvaluation, Hand,
     WinContext, WinContextBuilder, RoundContext, WindDirection, MostRecentTileContext,
-    isSuitedOrHonorTile, isHongKongTile, HongKongTile, analyzeForWinningHands, SuitedOrHonorTile,
+    isSuitedOrHonorTile, isHongKongTile, HongKongTile, analyzeForWinningHands, SuitedOrHonorTile
  } from "mjqt-scoring"
 import MahjongTile from "./mahjongTile/MahjongTile"
 import { useState, ReactElement } from "react";
@@ -61,6 +61,12 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
 
     function createOnTileClickPushToTilesAndMelds(tile: Tile) {
         return () => {
+            const numTiles = tilesAndMelds.map(tileOrMeld => tileOrMeld instanceof Meld ? tileOrMeld.tiles.length : 1)
+                .reduce<number>((num, accum) => num + accum, 0);
+            if (numTiles === 18) {
+                alert("The max number of non flower tiles in your hand is 18. You cannot add any more tiles.");
+                return;
+            }
             const nextTilesAndMelds = [...tilesAndMelds, tile];
             setTilesAndMelds(nextTilesAndMelds);
 
