@@ -1,4 +1,4 @@
-import { WinContext } from "mjqt-scoring";
+import { WinContext, WinContextBuilder } from "mjqt-scoring";
 import "./WinContextEditor.css";
 
 interface WinContextEditorProps {
@@ -10,52 +10,52 @@ function WinContextEditor(props: WinContextEditorProps) {
 
     function onCheckboxChange(event: React.ChangeEvent<HTMLInputElement>) {
         if (event.currentTarget.id === "mostRecentTileIsLastOfItsKind") {
-            const newWinContext = new WinContext.Builder().copyFrom(props.winContext)
+            const newWinContext = new WinContextBuilder().copyFrom(props.winContext)
                 .mostRecentTileIsLastOfItsKind(event.currentTarget.checked).build();
             props.onWinContextUpdate(newWinContext);
         }
         if (event.currentTarget.id === "winByRobbingAKong") {
-            const newWinContext = new WinContext.Builder().copyFrom(props.winContext)
+            const newWinContext = new WinContextBuilder().copyFrom(props.winContext)
                 .winByRobbingAKong(event.currentTarget.checked).build();
             props.onWinContextUpdate(newWinContext);
         }
         if (event.currentTarget.id === "winByLastTileOnWall") {
-            const newWinContext = new WinContext.Builder().copyFrom(props.winContext)
+            const newWinContext = new WinContextBuilder().copyFrom(props.winContext)
                 .winByLastTileOnWall(event.currentTarget.checked).build();
             props.onWinContextUpdate(newWinContext);
         }
         if (event.currentTarget.id === "winByLastDiscardOfGame") {
-            const newWinContext = new WinContext.Builder().copyFrom(props.winContext)
+            const newWinContext = new WinContextBuilder().copyFrom(props.winContext)
                 .winByLastDiscardOfGame(event.currentTarget.checked).build();
             props.onWinContextUpdate(newWinContext);
         }
         if (event.currentTarget.id === "winByKongReplacement") {
-            const newWinContext = new WinContext.Builder().copyFrom(props.winContext)
+            const newWinContext = new WinContextBuilder().copyFrom(props.winContext)
                 .winByKongReplacement(event.currentTarget.checked).build();
             props.onWinContextUpdate(newWinContext);
         }
         if (event.currentTarget.id === "winByFlowerReplacement") {
-            const newWinContext = new WinContext.Builder().copyFrom(props.winContext)
+            const newWinContext = new WinContextBuilder().copyFrom(props.winContext)
                 .winByFlowerReplacement(event.currentTarget.checked).build();
             props.onWinContextUpdate(newWinContext);
         }
         if (event.currentTarget.id === "winByKongOnKongReplacement") {
-            const newWinContext = new WinContext.Builder().copyFrom(props.winContext)
+            const newWinContext = new WinContextBuilder().copyFrom(props.winContext)
                 .winByKongOnKongReplacement(event.currentTarget.checked).build();
             props.onWinContextUpdate(newWinContext);
         }
         if (event.currentTarget.id === "winByFlowerOnFlowerReplacement") {
-            const newWinContext = new WinContext.Builder().copyFrom(props.winContext)
+            const newWinContext = new WinContextBuilder().copyFrom(props.winContext)
                 .winByFlowerOnFlowerReplacement(event.currentTarget.checked).build();
             props.onWinContextUpdate(newWinContext);
         }
         if (event.currentTarget.id === "winByMixedDoubleReplacement") {
-            const newWinContext = new WinContext.Builder().copyFrom(props.winContext)
+            const newWinContext = new WinContextBuilder().copyFrom(props.winContext)
                 .winByMixedDoubleReplacement(event.currentTarget.checked).build();
             props.onWinContextUpdate(newWinContext);
         }
         if (event.currentTarget.id === "winWithInitialHand") {
-            const newWinContext = new WinContext.Builder().copyFrom(props.winContext)
+            const newWinContext = new WinContextBuilder().copyFrom(props.winContext)
                 .winWithInitialHand(event.currentTarget.checked).build();
             props.onWinContextUpdate(newWinContext);
         }

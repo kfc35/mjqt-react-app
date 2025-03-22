@@ -3,7 +3,7 @@ import { BAMBOO_TILES, CHARACTER_TILES, CIRCLE_TILES,
     WIND_TILES, DRAGON_TILES, GENTLEMEN_TILES, SEASON_TILES, Tile, Meld,
     isFlowerTile, maxQuantityPerFlowerTile, maxQuantityPerNonFlowerTile,
     RootPointPredicateConfiguration, evaluateHandForHighestPossiblePointEvaluation, Hand,
-    WinContext, RoundContext, WindDirection, MostRecentTileContext,
+    WinContext, WinContextBuilder, RoundContext, WindDirection, MostRecentTileContext,
     isSuitedOrHonorTile, isHongKongTile, HongKongTile, analyzeForWinningHands, SuitedOrHonorTile,
  } from "mjqt-scoring"
 import MahjongTile from "./mahjongTile/MahjongTile"
@@ -22,7 +22,7 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
     const [submitDisabled, setSubmitDisabled] = useState(true);
     const [clearDisabled, setClearDisabled] = useState(true);
     const [roundContext, setRoundContext] = useState(new RoundContext(WindDirection.EAST, WindDirection.EAST));
-    const [winContext, setWinContext] = useState(new WinContext.Builder().build());
+    const [winContext, setWinContext] = useState(new WinContextBuilder().build());
     const [lastInputtedTileIsSelfDrawn, setLastInputtedTileIsSelfDrawn] = useState(true);
     //const [meldSelectorMode, setMeldSelectorMode] = useState(undefined);
     const router = useRouter();
@@ -225,9 +225,11 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
             <label htmlFor="lastInputtedTileIsSelfDrawn">Last Inputted Tile is Self Drawn: </label>
             <input type="checkbox" id="lastInputtedTileIsSelfDrawn" checked={lastInputtedTileIsSelfDrawn} onChange={onLastInputtedTileIsSelfDrawnChange} />
             </div>
+            <div>
             <button id="calculator-submit" onClick={onSubmit} disabled={submitDisabled}>Submit</button>
             {'     '}
             <button id="calculator-clear" onClick={onClear} disabled={clearDisabled}>Clear</button>
+            </div>
         </div>
         <div id="tile-buttons">
             <div className="button-section" id="flower-tile-buttons">
