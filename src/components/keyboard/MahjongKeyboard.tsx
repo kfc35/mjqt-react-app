@@ -4,14 +4,16 @@ import { BAMBOO_TILES, CHARACTER_TILES, CIRCLE_TILES,
     isFlowerTile, maxQuantityPerFlowerTile, maxQuantityPerNonFlowerTile,
     RootPointPredicateConfiguration, evaluateHandForHighestPossiblePointEvaluation, Hand,
     WinContext, WinContextBuilder, RoundContext, WindDirection, MostRecentTileContext,
-    isSuitedOrHonorTile, isHongKongTile, HongKongTile, analyzeForWinningHands, SuitedOrHonorTile,
+    isSuitedOrHonorTile, isHongKongTile, HongKongTile, analyzeForWinningHands, SuitedOrHonorTile
  } from "mjqt-scoring"
 import MahjongTile from "./mahjongTile/MahjongTile"
 import { useState, ReactElement } from "react";
 import { useRouter, getRouteApi } from '@tanstack/react-router';
+import { MeldMode } from './meldModeSelector/MeldMode';
 import TileInputBar from './tileInputBar/TileInputBar';
 import RoundContextSelector from './roundContextSelector/RoundContextSelector';
 import WinContextEditor from './winContextEditor/WinContextEditor';
+import MeldModeSelector from './meldModeSelector/MeldModeSelector';
 
 interface MahjongKeyboardProps {
     rootConfig: RootPointPredicateConfiguration
@@ -24,7 +26,7 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
     const [roundContext, setRoundContext] = useState(new RoundContext(WindDirection.EAST, WindDirection.EAST));
     const [winContext, setWinContext] = useState(new WinContextBuilder().build());
     const [lastInputtedTileIsSelfDrawn, setLastInputtedTileIsSelfDrawn] = useState(true);
-    //const [meldSelectorMode, setMeldSelectorMode] = useState(undefined);
+    const [meldMode, setMeldMode] = useState<MeldMode | undefined>(undefined);
     const router = useRouter();
     const route = getRouteApi('/');
     const loaderData = route.useLoaderData();
@@ -43,6 +45,12 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
         };
     }
 
+    function createOnButtonClickSetMeldMode(newMeldMode: MeldMode | undefined) {
+        return () => {
+            setMeldMode(newMeldMode);
+        }
+    }
+
     function onWinContextUpdate(newWinContext: WinContext) {
         setWinContext(newWinContext);
     }
@@ -53,6 +61,12 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
 
     function createOnTileClickPushToTilesAndMelds(tile: Tile) {
         return () => {
+            const numTiles = tilesAndMelds.map(tileOrMeld => tileOrMeld instanceof Meld ? tileOrMeld.tiles.length : 1)
+                .reduce<number>((num, accum) => num + accum, 0);
+            if (numTiles === 18) {
+                alert("The max number of non flower tiles in your hand is 18. You cannot add any more tiles.");
+                return;
+            }
             const nextTilesAndMelds = [...tilesAndMelds, tile];
             setTilesAndMelds(nextTilesAndMelds);
 
@@ -219,18 +233,19 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
 
     return (
     <>
+        <div className="sticky-section">
         <TileInputBar tilesAndMelds={tilesAndMelds} createOnTileClickSplice={createOnTileClickSpliceFromTilesAndMelds} />
-        <div>
             <div id="last-inputted-tile-config">
             <label htmlFor="lastInputtedTileIsSelfDrawn">Last Inputted Tile is Self Drawn: </label>
             <input type="checkbox" id="lastInputtedTileIsSelfDrawn" checked={lastInputtedTileIsSelfDrawn} onChange={onLastInputtedTileIsSelfDrawnChange} />
             </div>
-            <div>
+            <div id="calculator-submit-clear">
             <button id="calculator-submit" onClick={onSubmit} disabled={submitDisabled}>Submit</button>
             {'     '}
             <button id="calculator-clear" onClick={onClear} disabled={clearDisabled}>Clear</button>
             </div>
         </div>
+        <MeldModeSelector meldMode={meldMode} createOnButtonClickSetMeldMode={createOnButtonClickSetMeldMode}/>
         <div id="tile-buttons">
             <div className="button-section" id="flower-tile-buttons">
                 <h3>Flower Tiles</h3>

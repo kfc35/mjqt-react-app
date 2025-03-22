@@ -25,7 +25,15 @@ span.mahjong-tile {
     border: 0.1vmax solid transparent;
 }
 
-#last-inputted-tile-config {
+#last-inputted-tile-config, #calculator-submit-clear {
     display: inline-block;
-    margin: 0 0.5vmax;
+    margin: 0 0.5vmax 0.5vmax 0.5vmax;
+}
+
+.sticky-section {
+    position: sticky;
+    top: 0;
+    padding: 2vmax 0;
+    z-index: 1;
+    background-color: #242424;
 }

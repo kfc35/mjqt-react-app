@@ -19,6 +19,7 @@ function TileInputBar(props : TileInputBarProps) {
   const flowerElements = convertFlowerTilesToReactElements(props);
   return (
     <>
+    <div id="tile-input-bar">
       <div>
         <h2>Inputted Tiles</h2>
         {elements}
@@ -27,6 +28,7 @@ function TileInputBar(props : TileInputBarProps) {
         <h2>Inputted Flower Tiles</h2>
         {flowerElements.length === 0 ? <p>None</p>: flowerElements}
       </div>
+    </div>
     </>
   )
 }
