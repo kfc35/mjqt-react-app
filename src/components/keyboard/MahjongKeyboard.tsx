@@ -52,6 +52,12 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
     }
 
     function onWinContextUpdate(newWinContext: WinContext) {
+        if (newWinContext.winByKongOnKongReplacement) {
+            newWinContext.winByKongReplacement = true;
+        }
+        if (newWinContext.winByFlowerOnFlowerReplacement) {
+            newWinContext.winByFlowerReplacement = true;
+        }
         setWinContext(newWinContext);
     }
 
