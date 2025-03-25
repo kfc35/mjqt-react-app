@@ -5,12 +5,7 @@ import { BAMBOO_TILES, CHARACTER_TILES, CIRCLE_TILES,
     RootPointPredicateConfiguration, evaluateHandForHighestPossiblePointEvaluation, Hand,
     WinContext, WinContextBuilder, RoundContext, WindDirection, MostRecentTileContext,
     isSuitedOrHonorTile, isHongKongTile, HongKongTile, analyzeForWinningHands, SuitedOrHonorTile,
-    meldIsPair, Pair, Pong, Kong,
-    Chow,
-    isSuitedTile,
-    type SuitedTile,
-    compareTiles,
-    getNextSuitedTileValue,
+    meldIsPair, Pair, Pong, Kong, Chow, isSuitedTile, type SuitedTile, getNextSuitedTileValue,
     compareTilesByValueOnly
  } from "mjqt-scoring"
 import MahjongTile from "./mahjongTile/MahjongTile"
@@ -210,7 +205,8 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
                 return !isSuitedTile(tile) || maxQuantityPerNonFlowerTile - selectedQuantity < 1 || 
                     tile.group !== chowMeldModeTiles[0].group ||
                     chowMeldModeTiles.filter(chowTile => chowTile.equals(tile)).length > 0 || 
-                    chowMeldModeTiles[0].value - 2 > tile.value || chowMeldModeTiles[0].value + 2 < tile.value
+                    chowMeldModeTiles[0].value - 2 > tile.value + 0 || 
+                    chowMeldModeTiles[0].value + 2 < tile.value + 0
             case MeldMode.CONCEALED_PONG:
             case MeldMode.EXPOSED_PONG:
                 return maxQuantityPerNonFlowerTile - selectedQuantity < 3;
