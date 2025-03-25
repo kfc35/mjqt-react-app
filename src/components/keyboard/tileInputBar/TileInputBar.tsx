@@ -11,13 +11,12 @@ interface TileInputBarProps {
 
 function TileInputBar(props : TileInputBarProps) {
   const elements = convertNonFlowerTilesAndMeldsToReactElements(props);
-  const numTiles = props.tilesAndMelds
+  const numTiles = [...props.tilesAndMelds, ...props.chowMeldModeTiles]
     .filter(tileOrMeld => tileOrMeld instanceof Meld || !isFlowerTile(tileOrMeld))
     .map(tileOrMeld => tileOrMeld instanceof Meld ? tileOrMeld.tiles : [tileOrMeld])
     .reduce<number>((accum, tiles) => accum + tiles.length, 0);
   const numKongs = props.tilesAndMelds.filter(tileOrMeld => tileOrMeld instanceof Meld && meldIsKong(tileOrMeld)).length;
   const maxNumTilesInHand = 14 + numKongs;
-  console.log(numKongs);
   if (numTiles < maxNumTilesInHand) {
     for (const i of Array.from({length: maxNumTilesInHand - numTiles}, (_, k) => k + numTiles)) {
       const key = "placeholder-tile-" + i;
@@ -75,7 +74,8 @@ function convertNonFlowerTilesAndMeldsToReactElements(props: TileInputBarProps):
         const key = ("tile-input-index-" + index + "-" + secondIndex).toLowerCase();
         meldElements.push(<MahjongTile tile={tile} key={key} onTileClick={props.createOnTileClickSplice(index)}/>);
       }
-      elements.push(<div key={"meld-" + index} className={"tile-grouping meld " + tileOrMeld.type.toLowerCase()}>{meldElements}</div>);
+      const className = "tile-grouping meld " + tileOrMeld.type.toLowerCase() + (tileOrMeld.exposed ? "" : " concealed");
+      elements.push(<div key={"meld-" + index} className={className}>{meldElements}</div>);
     } else if (!isFlowerTile(tileOrMeld)) {
       const key = ("tile-input-index-" + index).toLowerCase();
       elements.push(<MahjongTile tile={tileOrMeld} key={key} onTileClick={props.createOnTileClickSplice(index)}/>);

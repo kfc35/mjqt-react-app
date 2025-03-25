@@ -1,9 +1,7 @@
 .tile-grouping {
     display: inline-block;
-    margin: 0.5vmax 0.5vmax;
     border-radius: 8px;
     border: 0.1vmax solid transparent;
-    padding: 0em 0.5vmax 0.2em 0.5vmax;
 }
 
 .tile-input-bar-elements {
@@ -24,4 +22,8 @@
 
 .kong {
     background-image: linear-gradient(to top right, bisque, black);
+}
+
+.concealed {
+    border: 0.1vmax dashed white;
 }
