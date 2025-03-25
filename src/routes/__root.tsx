@@ -25,4 +25,10 @@ export const Route = createRootRouteWithContext<CalculatorContext>()({
       <TanStackRouterDevtools />
     </>
   )},
+  notFoundComponent: () => {
+    return <></>;
+  },
+  pendingComponent: () => {
+    return <><p>Loading...</p></>;
+  },
 })

@@ -83,7 +83,7 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
             const numTiles = tilesAndMelds
                 .filter(tileOrMeld => tileOrMeld instanceof Meld || !isFlowerTile(tileOrMeld))
                 .map(tileOrMeld => tileOrMeld instanceof Meld ? tileOrMeld.tiles.length : 1)
-                .reduce<number>((num, accum) => num + accum, 0);
+                .reduce<number>((accum, num) => num + accum, 0);
             if (numTiles >= 18) {
                 alert("The max number of non flower tiles in your hand is 18. You cannot add any more tiles.");
                 return;
@@ -193,7 +193,7 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
         }
         const selectedQuantity = tilesAndMelds
             .map(tileOrMeld => tileOrMeld instanceof Tile ? [tileOrMeld] : tileOrMeld.tiles)
-            .reduce<Tile[]>((list, accum) => accum.concat(list), [])
+            .reduce<Tile[]>((accum, list) => accum.concat(list), [])
             .filter(selectedTile => selectedTile.equals(tile)).length;
         if (!meldMode) {
             return selectedQuantity >= maxQuantityPerNonFlowerTile;
