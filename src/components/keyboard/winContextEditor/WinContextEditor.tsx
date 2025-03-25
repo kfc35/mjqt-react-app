@@ -84,11 +84,11 @@ function WinContextEditor(props: WinContextEditorProps) {
             </tr>
             <tr>
                 <td><label htmlFor="winByKongReplacement">Winning off the Bonus Tile from declaring a Kong: </label></td>
-                <td><input type="checkbox" id="winByKongReplacement" checked={props.winContext.winByKongReplacement} onChange={onCheckboxChange} /></td>
+                <td><input type="checkbox" id="winByKongReplacement" checked={props.winContext.winByKongReplacement} onChange={onCheckboxChange} disabled={props.winContext.winByKongOnKongReplacement} /></td>
             </tr>
             <tr>
                 <td><label htmlFor="winByFlowerReplacement">Winning off the Bonus Tile from picking a Flower Tile: </label></td>
-                <td><input type="checkbox" id="winByFlowerReplacement" checked={props.winContext.winByFlowerReplacement} onChange={onCheckboxChange} /></td>
+                <td><input type="checkbox" id="winByFlowerReplacement" checked={props.winContext.winByFlowerReplacement} onChange={onCheckboxChange} disabled={props.winContext.winByFlowerOnFlowerReplacement} /></td>
             </tr>
             <tr>
                 <td><label htmlFor="winByKongOnKongReplacement">Winning off the Bonus Tile from declaring a Kong twice in succession: </label></td>
@@ -97,6 +97,10 @@ function WinContextEditor(props: WinContextEditorProps) {
             <tr>
                 <td><label htmlFor="winByFlowerOnFlowerReplacement">Winning off the Bonus Tile from picking a Flower Tile twice in succession: </label></td>
                 <td><input type="checkbox" id="winByFlowerOnFlowerReplacement" checked={props.winContext.winByFlowerOnFlowerReplacement} onChange={onCheckboxChange} /></td>
+            </tr>
+            <tr>
+                <td><label htmlFor="winByMixedDoubleReplacement">Winning off the Bonus Tile from picking a Flower Tile and declaring a Kong in any order: </label></td>
+                <td><input type="checkbox" id="winByMixedDoubleReplacement" checked={props.winContext.winByMixedDoubleReplacement} onChange={onCheckboxChange} /></td>
             </tr>
             <tr>
                 <td><label htmlFor="winWithInitialHand">Winning with your initial hand or off the first discard: </label></td>

@@ -36,7 +36,7 @@ export default ResultsDisplay
 function winningHandToElement(winningHand: WinningHand): ReactElement {
     if (winningHand instanceof MeldBasedWinningHand) {
         const elements = winningHand.melds.map((meld, index) => 
-            <div className={"tile-grouping meld " + meld.type.toLowerCase()} key={index}>
+            <div className={"tile-grouping meld " + meld.type.toLowerCase() + (meld.exposed ? "" : " concealed")} key={index}>
                 <span className="meld-text">{meld.type.toLowerCase()}: </span>
                 {meld.tiles.map(tile => getUnicodeRepresentation(tile)).join(" ")}
             </div>);

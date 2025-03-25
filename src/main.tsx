@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
-import { RouterProvider, createRouter } from '@tanstack/react-router'
+import { RouterProvider, createRouter, createMemoryHistory } from '@tanstack/react-router'
 import './index.css'
 import { defaultRootPointPredicateConfiguration, type PointEvaluation, type RootPointPredicateConfiguration } from 'mjqt-scoring'
 // Import the generated route tree
@@ -19,8 +19,13 @@ const initContext = {
 // deployment to github pages requires this basepath
 const basePath = '/mjqt-react-app/';
 
+// for github pages 
+const memoryHistory = createMemoryHistory({
+  initialEntries: ['/'], // Pass your initial url
+})
+
 // Create a new router instance
-const router = createRouter({ routeTree, context: initContext, basepath: basePath })
+const router = createRouter({ routeTree, context: initContext, basepath: basePath, history: memoryHistory })
 
 // Register the router instance for type safety
 declare module '@tanstack/react-router' {

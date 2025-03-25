@@ -1,16 +1,24 @@
-import { Tile, Meld, isFlowerTile } from 'mjqt-scoring'
+import { Tile, Meld, isFlowerTile, meldIsKong } from 'mjqt-scoring'
 import MahjongTile from '../mahjongTile/MahjongTile';
 import { ReactElement } from "react";
+import './TileInputBar.css';
 
 interface TileInputBarProps {
-  tilesAndMelds: (Tile | Meld)[]
+  tilesAndMelds: (Tile | Meld)[];
+  chowMeldModeTiles: Tile[];
   createOnTileClickSplice: (index: number) => () => void;
 }
 
 function TileInputBar(props : TileInputBarProps) {
   const elements = convertNonFlowerTilesAndMeldsToReactElements(props);
-  if (elements.length < 14) {
-    for (const i of Array.from({length: 14 - elements.length}, (_, k) => k + elements.length)) {
+  const numTiles = [...props.tilesAndMelds, ...props.chowMeldModeTiles]
+    .filter(tileOrMeld => tileOrMeld instanceof Meld || !isFlowerTile(tileOrMeld))
+    .map(tileOrMeld => tileOrMeld instanceof Meld ? tileOrMeld.tiles : [tileOrMeld])
+    .reduce<number>((accum, tiles) => accum + tiles.length, 0);
+  const numKongs = props.tilesAndMelds.filter(tileOrMeld => tileOrMeld instanceof Meld && meldIsKong(tileOrMeld)).length;
+  const maxNumTilesInHand = 14 + numKongs;
+  if (numTiles < maxNumTilesInHand) {
+    for (const i of Array.from({length: maxNumTilesInHand - numTiles}, (_, k) => k + numTiles)) {
       const key = "placeholder-tile-" + i;
       elements.push(<PlaceholderInputTile key={key} />);
     }
@@ -22,11 +30,15 @@ function TileInputBar(props : TileInputBarProps) {
     <div id="tile-input-bar">
       <div>
         <h2>Inputted Tiles</h2>
-        {elements}
+        <div className="tile-input-bar-elements">
+          {elements}
+        </div>
       </div>
       <div>
         <h2>Inputted Flower Tiles</h2>
+        <div className="tile-input-bar-elements">
         {flowerElements.length === 0 ? <p>None</p>: flowerElements}
+        </div>
       </div>
     </div>
     </>
@@ -57,15 +69,22 @@ function convertNonFlowerTilesAndMeldsToReactElements(props: TileInputBarProps):
   const elements : ReactElement[] = [];
   for (const [index, tileOrMeld] of props.tilesAndMelds.entries()) {
     if (tileOrMeld instanceof Meld) {
-      for (const tile of tileOrMeld.tiles) {
-        const key = ("tile-input-index-" + index).toLowerCase();
-        elements.push(<MahjongTile tile={tile} key={key} onTileClick={props.createOnTileClickSplice(index)}/>);
+      const meldElements : ReactElement[] = [];
+      for (const [secondIndex, tile] of tileOrMeld.tiles.entries()) {
+        const key = ("tile-input-index-" + index + "-" + secondIndex).toLowerCase();
+        meldElements.push(<MahjongTile tile={tile} key={key} onTileClick={props.createOnTileClickSplice(index)}/>);
       }
-      
+      const className = "tile-grouping meld " + tileOrMeld.type.toLowerCase() + (tileOrMeld.exposed ? "" : " concealed");
+      elements.push(<div key={"meld-" + index} className={className}>{meldElements}</div>);
     } else if (!isFlowerTile(tileOrMeld)) {
       const key = ("tile-input-index-" + index).toLowerCase();
       elements.push(<MahjongTile tile={tileOrMeld} key={key} onTileClick={props.createOnTileClickSplice(index)}/>);
     } // flower tiles are covered by convertFlowerTilesToReactElements.
+  }
+  // append any pending chow tiles at the end
+  for (const [index, tile] of props.chowMeldModeTiles.entries()) {
+    const key = ("tile-input-index-" + (props.tilesAndMelds.length + index)).toLowerCase();
+    elements.push(<MahjongTile tile={tile} key={key} onTileClick={props.createOnTileClickSplice(index)}/>);
   }
   return elements;
 }
