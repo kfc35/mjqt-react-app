@@ -57,8 +57,8 @@ function convertNonFlowerTilesAndMeldsToReactElements(props: TileInputBarProps):
   const elements : ReactElement[] = [];
   for (const [index, tileOrMeld] of props.tilesAndMelds.entries()) {
     if (tileOrMeld instanceof Meld) {
-      for (const tile of tileOrMeld.tiles) {
-        const key = ("tile-input-index-" + index).toLowerCase();
+      for (const [secondIndex, tile] of tileOrMeld.tiles.entries()) {
+        const key = ("tile-input-index-" + index + "-" + secondIndex).toLowerCase();
         elements.push(<MahjongTile tile={tile} key={key} onTileClick={props.createOnTileClickSplice(index)}/>);
       }
       

@@ -5,7 +5,13 @@ import { BAMBOO_TILES, CHARACTER_TILES, CIRCLE_TILES,
     RootPointPredicateConfiguration, evaluateHandForHighestPossiblePointEvaluation, Hand,
     WinContext, WinContextBuilder, RoundContext, WindDirection, MostRecentTileContext,
     isSuitedOrHonorTile, isHongKongTile, HongKongTile, analyzeForWinningHands, SuitedOrHonorTile,
-    meldIsPair
+    meldIsPair, Pair, Pong, Kong,
+    Chow,
+    isSuitedTile,
+    type SuitedTile,
+    compareTiles,
+    getNextSuitedTileValue,
+    compareTilesByValueOnly
  } from "mjqt-scoring"
 import MahjongTile from "./mahjongTile/MahjongTile"
 import { useState, ReactElement } from "react";
@@ -28,6 +34,7 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
     const [winContext, setWinContext] = useState(new WinContextBuilder().build());
     const [lastInputtedTileIsSelfDrawn, setLastInputtedTileIsSelfDrawn] = useState(true);
     const [meldMode, setMeldMode] = useState<MeldMode | undefined>(undefined);
+    const [chowMeldModeTiles, setChowMeldModeTiles] = useState([] as SuitedTile[]);
     const router = useRouter();
     const route = getRouteApi('/');
     const loaderData = route.useLoaderData();
@@ -49,6 +56,10 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
 
     function createOnButtonClickSetMeldMode(newMeldMode: MeldMode | undefined) {
         return () => {
+            if ((meldMode === MeldMode.EXPOSED_CHOW || meldMode === MeldMode.CONCEALED_CHOW) && 
+                !(newMeldMode === MeldMode.EXPOSED_CHOW || newMeldMode === MeldMode.CONCEALED_CHOW)) {
+                    setChowMeldModeTiles([]);
+            }
             setMeldMode(newMeldMode);
         }
     }
@@ -67,18 +78,78 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
         setLastInputtedTileIsSelfDrawn(event.currentTarget.checked);
     }
 
-    function createOnTileClickPushToTilesAndMelds(tile: Tile) {
+    function createOnTileClickPushToCorrectField(tile: Tile) {
         return () => {
             const numTiles = tilesAndMelds
                 .filter(tileOrMeld => tileOrMeld instanceof Meld || !isFlowerTile(tileOrMeld))
                 .map(tileOrMeld => tileOrMeld instanceof Meld ? tileOrMeld.tiles.length : 1)
                 .reduce<number>((num, accum) => num + accum, 0);
-            if (numTiles === 18) {
+            if (numTiles >= 18) {
                 alert("The max number of non flower tiles in your hand is 18. You cannot add any more tiles.");
                 return;
             }
-            const nextTilesAndMelds = [...tilesAndMelds, tile];
-            setTilesAndMelds(nextTilesAndMelds);
+            const nextTilesAndMelds = [...tilesAndMelds];
+            if (!meldMode || isFlowerTile(tile)) {
+                nextTilesAndMelds.push(tile);
+                setTilesAndMelds(nextTilesAndMelds);
+            } else if (isSuitedOrHonorTile(tile)) {
+                switch (meldMode) {
+                    case MeldMode.CONCEALED_PAIR:
+                    case MeldMode.EXPOSED_PAIR:
+                        if (numTiles + 2 > 18) {
+                            alert("The max number of non flower tiles in your hand would be over 18. You cannot add a pair.");
+                            return;
+                        }
+                        nextTilesAndMelds.push(new Pair(tile, meldMode === MeldMode.EXPOSED_PAIR));
+                        break;
+                    case MeldMode.CONCEALED_PONG:
+                    case MeldMode.EXPOSED_PONG:
+                        if (numTiles + 3 > 18) {
+                            alert("The max number of non flower tiles in your hand would be over 18. You cannot add a pong.");
+                            return;
+                        }
+                        nextTilesAndMelds.push(new Pong(tile, meldMode === MeldMode.EXPOSED_PONG));
+                        break;
+                    case MeldMode.CONCEALED_KONG:
+                    case MeldMode.EXPOSED_KONG:
+                        if (numTiles + 4 > 18) {
+                            alert("The max number of non flower tiles in your hand would be over 18. You cannot add a kong.");
+                            return;
+                        }
+                        nextTilesAndMelds.push(new Kong(tile, meldMode === MeldMode.EXPOSED_KONG));
+                        break;
+                    case MeldMode.CONCEALED_CHOW:
+                    case MeldMode.EXPOSED_CHOW:
+                        if (numTiles + 3 > 18) {
+                            alert("The max number of non flower tiles in your hand would be over 18. You cannot add a chow.");
+                            return;
+                        }
+                        if (!isSuitedTile(tile)) {
+                            alert("Chows can only contain suited tiles.");
+                            return;
+                        }
+                        if (chowMeldModeTiles.length === 0) {
+                            setChowMeldModeTiles([tile]);
+                        } else if (chowMeldModeTiles.length === 1) {
+                            setChowMeldModeTiles([chowMeldModeTiles[0], tile]);
+                        } else if (chowMeldModeTiles.length === 2) {
+                            const chowTiles = [...chowMeldModeTiles, tile].sort(compareTilesByValueOnly) as [SuitedTile, SuitedTile, SuitedTile];
+                            if (getNextSuitedTileValue(chowTiles[0].value) === chowTiles[1].value && 
+                                getNextSuitedTileValue(chowTiles[1].value) === chowTiles[2].value) {
+                                    nextTilesAndMelds.push(new Chow([chowMeldModeTiles[0], chowMeldModeTiles[1], tile], meldMode === MeldMode.EXPOSED_CHOW));
+                                    setChowMeldModeTiles([]);
+                                }
+                            else {
+                                alert("Your chow is not a consecutive run.");
+                                return;
+                            }
+                        }
+                }
+                setTilesAndMelds(nextTilesAndMelds);
+            } else {
+                alert("Invalid tile.");
+                return;
+            }
 
             const nonFlowerTiles = nextTilesAndMelds
             .map(tileOrMeld => tileOrMeld instanceof Tile ? [tileOrMeld] : tileOrMeld.tiles)
@@ -120,14 +191,42 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
         if (isFlowerTile(tile)) {
             return tilesAndMelds.filter(tileOrMeld => tileOrMeld instanceof Tile && tileOrMeld.equals(tile)).length >= maxQuantityPerFlowerTile;
         }
-        return tilesAndMelds.filter(tileOrMeld => tileOrMeld instanceof Tile && tileOrMeld.equals(tile)).length >= maxQuantityPerNonFlowerTile;
+        const selectedQuantity = tilesAndMelds
+            .map(tileOrMeld => tileOrMeld instanceof Tile ? [tileOrMeld] : tileOrMeld.tiles)
+            .reduce<Tile[]>((list, accum) => accum.concat(list), [])
+            .filter(selectedTile => selectedTile.equals(tile)).length;
+        if (!meldMode) {
+            return selectedQuantity >= maxQuantityPerNonFlowerTile;
+        }
+        switch (meldMode) {
+            case MeldMode.CONCEALED_PAIR:
+            case MeldMode.EXPOSED_PAIR:
+                return maxQuantityPerNonFlowerTile - selectedQuantity < 2;
+            case MeldMode.CONCEALED_CHOW:
+            case MeldMode.EXPOSED_CHOW:
+                if (chowMeldModeTiles.length <= 0) {
+                    return !isSuitedTile(tile) || maxQuantityPerNonFlowerTile - selectedQuantity < 1;
+                }
+                return !isSuitedTile(tile) || maxQuantityPerNonFlowerTile - selectedQuantity < 1 || 
+                    tile.group !== chowMeldModeTiles[0].group ||
+                    chowMeldModeTiles.filter(chowTile => chowTile.equals(tile)).length > 0 || 
+                    chowMeldModeTiles[0].value - 2 > tile.value || chowMeldModeTiles[0].value + 2 < tile.value
+            case MeldMode.CONCEALED_PONG:
+            case MeldMode.EXPOSED_PONG:
+                return maxQuantityPerNonFlowerTile - selectedQuantity < 3;
+            case MeldMode.CONCEALED_KONG:
+            case MeldMode.EXPOSED_KONG:
+                return maxQuantityPerNonFlowerTile - selectedQuantity < 4;
+            default:
+                return true;
+        }
     }
 
     function convertTilesToReactElement(tiles: Tile[]): ReactElement[] {
         const elements: ReactElement[] = [];
         for (const tile of tiles) {
             const key = (tile.group + "-" + tile.value).toLowerCase();
-            elements.push(<MahjongTile tile={tile} key={key} onTileClick={createOnTileClickPushToTilesAndMelds(tile)} 
+            elements.push(<MahjongTile tile={tile} key={key} onTileClick={createOnTileClickPushToCorrectField(tile)} 
                 disabled={tileButtonDisabled(tile)} />);
         }
         return elements;
@@ -138,6 +237,7 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
             .map(tileOrMeld => tileOrMeld instanceof Tile ? [tileOrMeld] : tileOrMeld.tiles)
             .reduce<Tile[]>((accum, tiles) => accum.concat(tiles), [])
             .filter(tile => isHongKongTile(tile));
+        const userSpecifiedMelds: Meld[] = tilesAndMelds.filter(tileOrMeld => tileOrMeld instanceof Meld);
         const suitedOrHonorTiles: SuitedOrHonorTile[] = tiles
             .filter(tile => !isFlowerTile(tile))
             .filter(tile => isSuitedOrHonorTile(tile));
@@ -147,7 +247,7 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
         }
         const lastTile = suitedOrHonorTiles[suitedOrHonorTiles.length-1];
 
-        const winningHands = analyzeForWinningHands(new Hand(tiles, new MostRecentTileContext(lastTile, lastInputtedTileIsSelfDrawn)));
+        const winningHands = analyzeForWinningHands(new Hand(tiles, new MostRecentTileContext(lastTile, lastInputtedTileIsSelfDrawn), userSpecifiedMelds));
         console.log(JSON.stringify(winningHands));
         const pointEval = evaluateHandForHighestPossiblePointEvaluation(new Hand(tiles, new MostRecentTileContext(lastTile, lastInputtedTileIsSelfDrawn)), 
             winContext, 
@@ -168,6 +268,8 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
 
     function onClear() {
         setTilesAndMelds([]);
+        setChowMeldModeTiles([]);
+        setMeldMode(undefined);
         setSubmitDisabled(true);
     }
 
