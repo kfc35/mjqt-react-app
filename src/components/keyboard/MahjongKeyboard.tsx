@@ -4,7 +4,7 @@ import { BAMBOO_TILES, CHARACTER_TILES, CIRCLE_TILES,
     isFlowerTile, maxQuantityPerFlowerTile, maxQuantityPerNonFlowerTile,
     RootPointPredicateConfiguration, evaluateHandForHighestPossiblePointEvaluation, Hand,
     WinContext, WinContextBuilder, RoundContext, WindDirection, MostRecentTileContext,
-    isSuitedOrHonorTile, isHongKongTile, HongKongTile, analyzeForWinningHands, SuitedOrHonorTile,
+    isSuitedOrHonorTile, isHongKongTile, HongKongTile, SuitedOrHonorTile,
     meldIsPair, Pair, Pong, Kong, Chow, isSuitedTile, type SuitedTile, getNextSuitedTileValue,
     compareTilesByValueOnly
  } from "mjqt-scoring"
@@ -27,7 +27,6 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
     const [clearDisabled, setClearDisabled] = useState(true);
     const [roundContext, setRoundContext] = useState(new RoundContext(WindDirection.EAST, WindDirection.EAST));
     const [winContext, setWinContext] = useState(new WinContextBuilder().build());
-    const [lastInputtedTileIsSelfDrawn, setLastInputtedTileIsSelfDrawn] = useState(true);
     const [meldMode, setMeldMode] = useState<MeldMode | undefined>(undefined);
     const [chowMeldModeTiles, setChowMeldModeTiles] = useState([] as SuitedTile[]);
     const router = useRouter();
@@ -67,10 +66,6 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
             newWinContext.winByFlowerReplacement = true;
         }
         setWinContext(newWinContext);
-    }
-
-    function onLastInputtedTileIsSelfDrawnChange(event: React.ChangeEvent<HTMLInputElement>) {
-        setLastInputtedTileIsSelfDrawn(event.currentTarget.checked);
     }
 
     function createOnTileClickPushToCorrectField(tile: Tile) {
@@ -237,15 +232,16 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
         const suitedOrHonorTiles: SuitedOrHonorTile[] = tiles
             .filter(tile => !isFlowerTile(tile))
             .filter(tile => isSuitedOrHonorTile(tile));
-        if (suitedOrHonorTiles.length < 14) {
+        if (suitedOrHonorTiles.length < 14 || tilesAndMelds.length <= 0) {
             alert("You need at least 14 tiles to submit.");
             return;
         }
-        const lastTile = suitedOrHonorTiles[suitedOrHonorTiles.length-1];
+        
+        const lastTileOrMeld = tilesAndMelds[tilesAndMelds.length - 1];
+        const lastTile = suitedOrHonorTiles[suitedOrHonorTiles.length - 1];
+        const mostRecentTileContext = lastTileOrMeld instanceof Meld ? new MostRecentTileContext(lastTile, lastTileOrMeld) : new MostRecentTileContext(lastTile, true);
 
-        const winningHands = analyzeForWinningHands(new Hand(tiles, new MostRecentTileContext(lastTile, lastInputtedTileIsSelfDrawn), userSpecifiedMelds));
-        console.log(JSON.stringify(winningHands));
-        const pointEval = evaluateHandForHighestPossiblePointEvaluation(new Hand(tiles, new MostRecentTileContext(lastTile, lastInputtedTileIsSelfDrawn)), 
+        const pointEval = evaluateHandForHighestPossiblePointEvaluation(new Hand(tiles, mostRecentTileContext, userSpecifiedMelds), 
             winContext, 
             roundContext,
             props.rootConfig);
@@ -343,10 +339,6 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
     <>
         <div className="sticky-section">
         <TileInputBar tilesAndMelds={tilesAndMelds} chowMeldModeTiles={chowMeldModeTiles} createOnTileClickSplice={createOnTileClickSpliceFromTilesAndMelds} />
-            <div id="last-inputted-tile-config">
-            <label htmlFor="lastInputtedTileIsSelfDrawn">Last Inputted Tile is Self Drawn: </label>
-            <input type="checkbox" id="lastInputtedTileIsSelfDrawn" checked={lastInputtedTileIsSelfDrawn} onChange={onLastInputtedTileIsSelfDrawnChange} />
-            </div>
             <div id="calculator-submit-clear">
             <button id="calculator-submit" onClick={onSubmit} disabled={submitDisabled}>Submit</button>
             {'     '}

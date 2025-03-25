@@ -23,7 +23,7 @@
 }
 
 .green-tile {
-    color: green
+    color: green;
 }
 
 .green-tile:disabled {
