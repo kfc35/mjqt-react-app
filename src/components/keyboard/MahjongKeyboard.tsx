@@ -4,7 +4,8 @@ import { BAMBOO_TILES, CHARACTER_TILES, CIRCLE_TILES,
     isFlowerTile, maxQuantityPerFlowerTile, maxQuantityPerNonFlowerTile,
     RootPointPredicateConfiguration, evaluateHandForHighestPossiblePointEvaluation, Hand,
     WinContext, WinContextBuilder, RoundContext, WindDirection, MostRecentTileContext,
-    isSuitedOrHonorTile, isHongKongTile, HongKongTile, analyzeForWinningHands, SuitedOrHonorTile
+    isSuitedOrHonorTile, isHongKongTile, HongKongTile, analyzeForWinningHands, SuitedOrHonorTile,
+    meldIsPair
  } from "mjqt-scoring"
 import MahjongTile from "./mahjongTile/MahjongTile"
 import { useState, ReactElement } from "react";
@@ -30,6 +31,7 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
     const router = useRouter();
     const route = getRouteApi('/');
     const loaderData = route.useLoaderData();
+    const exposedPairDisabled = tilesAndMelds.filter(tileOrMeld => tileOrMeld instanceof Meld && meldIsPair(tileOrMeld) && tileOrMeld.exposed).length > 0;
 
     function createOnTileClickUpdateSeatWind(seatWind: WindDirection) {
         return () => {
@@ -253,7 +255,7 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
             <button id="calculator-clear" onClick={onClear} disabled={clearDisabled}>Clear</button>
             </div>
         </div>
-        <MeldModeSelector meldMode={meldMode} createOnButtonClickSetMeldMode={createOnButtonClickSetMeldMode}/>
+        <MeldModeSelector meldMode={meldMode} exposedPairDisabled={exposedPairDisabled} createOnButtonClickSetMeldMode={createOnButtonClickSetMeldMode}/>
         <div id="tile-buttons">
             <div className="button-section" id="flower-tile-buttons">
                 <h3>Flower Tiles</h3>
