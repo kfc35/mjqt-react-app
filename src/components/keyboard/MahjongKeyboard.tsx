@@ -23,6 +23,7 @@ interface MahjongKeyboardProps {
 
 function MahjongKeyboard(props: MahjongKeyboardProps) {
     const [tilesAndMelds, setTilesAndMelds] = useState([] as (Tile | Meld)[]);
+    const [lastClickedSuitedOrHonorTile, setLastClickedSuitedOrHonorTile] = useState(undefined as undefined | SuitedOrHonorTile);
     const [submitDisabled, setSubmitDisabled] = useState(true);
     const [clearDisabled, setClearDisabled] = useState(true);
     const [roundContext, setRoundContext] = useState(new RoundContext(WindDirection.EAST, WindDirection.EAST));
@@ -81,6 +82,9 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
             const nextTilesAndMelds = [...tilesAndMelds];
             if (!meldMode || isFlowerTile(tile)) {
                 nextTilesAndMelds.push(tile);
+                if (isSuitedOrHonorTile(tile)) {
+                    setLastClickedSuitedOrHonorTile(tile);
+                }
                 setTilesAndMelds(nextTilesAndMelds);
             } else if (isSuitedOrHonorTile(tile)) {
                 switch (meldMode) {
@@ -135,6 +139,7 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
                             }
                         }
                 }
+                setLastClickedSuitedOrHonorTile(tile);
                 setTilesAndMelds(nextTilesAndMelds);
             } else {
                 alert("Invalid tile.");
@@ -232,14 +237,14 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
         const suitedOrHonorTiles: SuitedOrHonorTile[] = tiles
             .filter(tile => !isFlowerTile(tile))
             .filter(tile => isSuitedOrHonorTile(tile));
-        if (suitedOrHonorTiles.length < 14 || tilesAndMelds.length <= 0) {
+        if (suitedOrHonorTiles.length < 14 || tilesAndMelds.length <= 0 || lastClickedSuitedOrHonorTile === undefined) {
             alert("You need at least 14 tiles to submit.");
             return;
         }
         
         const lastTileOrMeld = tilesAndMelds[tilesAndMelds.length - 1];
-        const lastTile = suitedOrHonorTiles[suitedOrHonorTiles.length - 1];
-        const mostRecentTileContext = lastTileOrMeld instanceof Meld ? new MostRecentTileContext(lastTile, lastTileOrMeld) : new MostRecentTileContext(lastTile, true);
+        const mostRecentTileContext = lastTileOrMeld instanceof Meld ? new MostRecentTileContext(lastClickedSuitedOrHonorTile, lastTileOrMeld) 
+            : new MostRecentTileContext(lastClickedSuitedOrHonorTile, true);
 
         const pointEval = evaluateHandForHighestPossiblePointEvaluation(new Hand(tiles, mostRecentTileContext, userSpecifiedMelds), 
             winContext, 
@@ -260,8 +265,9 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
 
     function onClear() {
         setTilesAndMelds([]);
-        setChowMeldModeTiles([]);
+        setLastClickedSuitedOrHonorTile(undefined);
         setMeldMode(undefined);
+        setChowMeldModeTiles([]);
         setSubmitDisabled(true);
     }
 
