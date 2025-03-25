@@ -346,7 +346,7 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
     return (
     <>
         <div className="sticky-section">
-        <TileInputBar tilesAndMelds={tilesAndMelds} createOnTileClickSplice={createOnTileClickSpliceFromTilesAndMelds} />
+        <TileInputBar tilesAndMelds={tilesAndMelds} chowMeldModeTiles={chowMeldModeTiles} createOnTileClickSplice={createOnTileClickSpliceFromTilesAndMelds} />
             <div id="last-inputted-tile-config">
             <label htmlFor="lastInputtedTileIsSelfDrawn">Last Inputted Tile is Self Drawn: </label>
             <input type="checkbox" id="lastInputtedTileIsSelfDrawn" checked={lastInputtedTileIsSelfDrawn} onChange={onLastInputtedTileIsSelfDrawnChange} />

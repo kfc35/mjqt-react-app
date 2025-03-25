@@ -3,7 +3,8 @@ import MahjongTile from '../mahjongTile/MahjongTile';
 import { ReactElement } from "react";
 
 interface TileInputBarProps {
-  tilesAndMelds: (Tile | Meld)[]
+  tilesAndMelds: (Tile | Meld)[];
+  chowMeldModeTiles: Tile[];
   createOnTileClickSplice: (index: number) => () => void;
 }
 
@@ -66,6 +67,11 @@ function convertNonFlowerTilesAndMeldsToReactElements(props: TileInputBarProps):
       const key = ("tile-input-index-" + index).toLowerCase();
       elements.push(<MahjongTile tile={tileOrMeld} key={key} onTileClick={props.createOnTileClickSplice(index)}/>);
     } // flower tiles are covered by convertFlowerTilesToReactElements.
+  }
+  // append any pending chow tiles at the end
+  for (const [index, tile] of props.chowMeldModeTiles.entries()) {
+    const key = ("tile-input-index-" + (props.tilesAndMelds.length + index)).toLowerCase();
+    elements.push(<MahjongTile tile={tile} key={key} onTileClick={props.createOnTileClickSplice(index)}/>);
   }
   return elements;
 }
