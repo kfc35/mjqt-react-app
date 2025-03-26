@@ -12,6 +12,7 @@ interface MahjongTileProps {
   onTileClick?: () => void
   disabled?: boolean
   selected?: boolean
+  highlighted?: boolean
 }
 
 function MahjongTile(props: MahjongTileProps) {
@@ -31,6 +32,9 @@ function MahjongTile(props: MahjongTileProps) {
   }
   if (props.selected) {
     classNames.push("selected")
+  }
+  if (props.highlighted) {
+    classNames.push("highlighted")
   }
   const tileToCssClassName = (props.tile.group + "-" + props.tile.value).toLowerCase();
   classNames.push(tileToCssClassName);

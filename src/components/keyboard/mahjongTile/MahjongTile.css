@@ -23,11 +23,15 @@
 }
 
 .green-tile {
-    color: green
+    color: green;
 }
 
 .green-tile:disabled {
     color: darkgreen
+}
+
+.highlighted {
+    color: gold;
 }
 
 .reversible-tile {
@@ -35,7 +39,7 @@
 }
 
 .reversible-tile:disabled {
-    background-image: linear-gradient(to top right, black, black);
+    background-image: unset;
 }
 
 .selected {

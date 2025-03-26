@@ -1,12 +1,15 @@
-import { Tile, Meld, isFlowerTile, meldIsKong } from 'mjqt-scoring'
+import { Meld, isFlowerTile, meldIsKong, meldIsChow, type SuitedOrHonorTile, type FlowerTile, SuitedTile } from 'mjqt-scoring'
 import MahjongTile from '../mahjongTile/MahjongTile';
 import { ReactElement } from "react";
 import './TileInputBar.css';
 
 interface TileInputBarProps {
-  tilesAndMelds: (Tile | Meld)[];
-  chowMeldModeTiles: Tile[];
-  createOnTileClickSplice: (index: number) => () => void;
+  tilesAndMelds: (SuitedOrHonorTile | Meld)[];
+  flowerTiles: FlowerTile[];
+  chowMeldModeTiles: SuitedTile[];
+  lastClickedSuitedOrHonorTile: SuitedOrHonorTile | undefined;
+  createOnTileClickSpliceFromTilesAndMeldsOrChowMeldModeTiles: (index: number) => () => void;
+  createOnTileClickSpliceFromFlowerTiles: (index: number) => () => void;
 }
 
 function TileInputBar(props : TileInputBarProps) {
@@ -56,12 +59,9 @@ function PlaceholderInputTile(): ReactElement {
 }
 
 function convertFlowerTilesToReactElements(props: TileInputBarProps): ReactElement[] {
-  return props.tilesAndMelds.map((tileOrMeld, index) => [tileOrMeld, index] as [Tile | Meld, number])
-    .filter(([tileOrMeld,]) => tileOrMeld instanceof Tile && isFlowerTile(tileOrMeld))
-    .map(([tile, index]) => [tile, index] as [Tile, number])
-    .map(([tile, index]) => {
+  return props.flowerTiles.map((tile, index) => {
       const key = ("tile-input-index-" + index).toLowerCase();
-      return <MahjongTile tile={tile} key={key} onTileClick={props.createOnTileClickSplice(index)}/>
+      return <MahjongTile tile={tile} key={key} onTileClick={props.createOnTileClickSpliceFromFlowerTiles(index)}/>
   });
 }
   
@@ -72,19 +72,25 @@ function convertNonFlowerTilesAndMeldsToReactElements(props: TileInputBarProps):
       const meldElements : ReactElement[] = [];
       for (const [secondIndex, tile] of tileOrMeld.tiles.entries()) {
         const key = ("tile-input-index-" + index + "-" + secondIndex).toLowerCase();
-        meldElements.push(<MahjongTile tile={tile} key={key} onTileClick={props.createOnTileClickSplice(index)}/>);
+        const highlighted = props.chowMeldModeTiles.length === 0 && index === props.tilesAndMelds.length - 1 && 
+          ((meldIsChow(tileOrMeld) && tile.equals(props.lastClickedSuitedOrHonorTile)) || 
+          (secondIndex === tileOrMeld.tiles.length - 1 && tile.equals(props.lastClickedSuitedOrHonorTile)))
+        meldElements.push(<MahjongTile tile={tile} key={key} onTileClick={props.createOnTileClickSpliceFromTilesAndMeldsOrChowMeldModeTiles(index)} highlighted={highlighted}
+        />);
       }
       const className = "tile-grouping meld " + tileOrMeld.type.toLowerCase() + (tileOrMeld.exposed ? "" : " concealed");
       elements.push(<div key={"meld-" + index} className={className}>{meldElements}</div>);
-    } else if (!isFlowerTile(tileOrMeld)) {
+    } else {
       const key = ("tile-input-index-" + index).toLowerCase();
-      elements.push(<MahjongTile tile={tileOrMeld} key={key} onTileClick={props.createOnTileClickSplice(index)}/>);
-    } // flower tiles are covered by convertFlowerTilesToReactElements.
+      const highlighted = props.chowMeldModeTiles.length === 0 && index === props.tilesAndMelds.length - 1 && tileOrMeld.equals(props.lastClickedSuitedOrHonorTile);
+      elements.push(<MahjongTile tile={tileOrMeld} key={key} onTileClick={props.createOnTileClickSpliceFromTilesAndMeldsOrChowMeldModeTiles(index)} highlighted={highlighted} />);
+    } 
   }
   // append any pending chow tiles at the end
   for (const [index, tile] of props.chowMeldModeTiles.entries()) {
     const key = ("tile-input-index-" + (props.tilesAndMelds.length + index)).toLowerCase();
-    elements.push(<MahjongTile tile={tile} key={key} onTileClick={props.createOnTileClickSplice(index)}/>);
+    const highlighted = index === props.chowMeldModeTiles.length - 1 && tile.equals(props.lastClickedSuitedOrHonorTile);
+    elements.push(<MahjongTile tile={tile} key={key} onTileClick={props.createOnTileClickSpliceFromTilesAndMeldsOrChowMeldModeTiles(props.tilesAndMelds.length + index)} highlighted={highlighted} />);
   }
   return elements;
 }

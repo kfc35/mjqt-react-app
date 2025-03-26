@@ -4,9 +4,10 @@ import { BAMBOO_TILES, CHARACTER_TILES, CIRCLE_TILES,
     isFlowerTile, maxQuantityPerFlowerTile, maxQuantityPerNonFlowerTile,
     RootPointPredicateConfiguration, evaluateHandForHighestPossiblePointEvaluation, Hand,
     WinContext, WinContextBuilder, RoundContext, WindDirection, MostRecentTileContext,
-    isSuitedOrHonorTile, isHongKongTile, HongKongTile, analyzeForWinningHands, SuitedOrHonorTile,
+    isSuitedOrHonorTile, isHongKongTile, HongKongTile, SuitedOrHonorTile,
     meldIsPair, Pair, Pong, Kong, Chow, isSuitedTile, type SuitedTile, getNextSuitedTileValue,
-    compareTilesByValueOnly
+    compareTilesByValueOnly, meldIsChow,
+    type FlowerTile
  } from "mjqt-scoring"
 import MahjongTile from "./mahjongTile/MahjongTile"
 import { useState, ReactElement } from "react";
@@ -22,12 +23,13 @@ interface MahjongKeyboardProps {
 }
 
 function MahjongKeyboard(props: MahjongKeyboardProps) {
-    const [tilesAndMelds, setTilesAndMelds] = useState([] as (Tile | Meld)[]);
+    const [tilesAndMelds, setTilesAndMelds] = useState([] as (SuitedOrHonorTile | Meld)[]);
+    const [flowerTiles, setFlowerTiles] = useState([] as FlowerTile[]);
+    const [clickedSuitedOrHonorTileStack, setClickedSuitedOrHonorTileStack] = useState([] as SuitedOrHonorTile[]);
     const [submitDisabled, setSubmitDisabled] = useState(true);
     const [clearDisabled, setClearDisabled] = useState(true);
     const [roundContext, setRoundContext] = useState(new RoundContext(WindDirection.EAST, WindDirection.EAST));
     const [winContext, setWinContext] = useState(new WinContextBuilder().build());
-    const [lastInputtedTileIsSelfDrawn, setLastInputtedTileIsSelfDrawn] = useState(true);
     const [meldMode, setMeldMode] = useState<MeldMode | undefined>(undefined);
     const [chowMeldModeTiles, setChowMeldModeTiles] = useState([] as SuitedTile[]);
     const router = useRouter();
@@ -69,12 +71,18 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
         setWinContext(newWinContext);
     }
 
-    function onLastInputtedTileIsSelfDrawnChange(event: React.ChangeEvent<HTMLInputElement>) {
-        setLastInputtedTileIsSelfDrawn(event.currentTarget.checked);
-    }
-
     function createOnTileClickPushToCorrectField(tile: Tile) {
         return () => {
+            if (isFlowerTile(tile)) {
+                setFlowerTiles([...flowerTiles, tile]);
+                setClearDisabled(false);
+                return;
+            }
+            if (!isSuitedOrHonorTile(tile)) { // this should not happen.
+                alert('Invalid tile');
+                return;
+            }
+
             const numTiles = tilesAndMelds
                 .filter(tileOrMeld => tileOrMeld instanceof Meld || !isFlowerTile(tileOrMeld))
                 .map(tileOrMeld => tileOrMeld instanceof Meld ? tileOrMeld.tiles.length : 1)
@@ -84,10 +92,13 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
                 return;
             }
             const nextTilesAndMelds = [...tilesAndMelds];
-            if (!meldMode || isFlowerTile(tile)) {
+            if (!meldMode) {
                 nextTilesAndMelds.push(tile);
+                const newStack = [...clickedSuitedOrHonorTileStack];
+                newStack.push(tile);
+                setClickedSuitedOrHonorTileStack(newStack);
                 setTilesAndMelds(nextTilesAndMelds);
-            } else if (isSuitedOrHonorTile(tile)) {
+            } else {
                 switch (meldMode) {
                     case MeldMode.CONCEALED_PAIR:
                     case MeldMode.EXPOSED_PAIR:
@@ -133,17 +144,17 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
                                 getNextSuitedTileValue(chowTiles[1].value) === chowTiles[2].value) {
                                     nextTilesAndMelds.push(new Chow([chowMeldModeTiles[0], chowMeldModeTiles[1], tile], meldMode === MeldMode.EXPOSED_CHOW));
                                     setChowMeldModeTiles([]);
-                                }
+                            }
                             else {
                                 alert("Your chow is not a consecutive run.");
                                 return;
                             }
                         }
                 }
+                const newStack = [...clickedSuitedOrHonorTileStack];
+                newStack.push(tile);
+                setClickedSuitedOrHonorTileStack(newStack);
                 setTilesAndMelds(nextTilesAndMelds);
-            } else {
-                alert("Invalid tile.");
-                return;
             }
 
             const nonFlowerTiles = nextTilesAndMelds
@@ -160,31 +171,54 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
         };
     }
 
-    function createOnTileClickSpliceFromTilesAndMelds(index: number) {
+    function createOnTileClickSpliceFromTilesAndMeldsOrChowMeldModeTiles(spliceIndex: number) {
         return () => {
-            const nextTilesAndMelds = [...tilesAndMelds];
-            nextTilesAndMelds.splice(index, 1);
-            setTilesAndMelds(nextTilesAndMelds);
+            if (spliceIndex < tilesAndMelds.length) {
+                const nextTilesAndMelds = [...tilesAndMelds];
+                nextTilesAndMelds.splice(spliceIndex, 1);
+                setTilesAndMelds(nextTilesAndMelds);
 
-            const nonFlowerTiles = nextTilesAndMelds
-            .map(tileOrMeld => tileOrMeld instanceof Tile ? [tileOrMeld] : tileOrMeld.tiles)
-            .reduce<Tile[]>((accum, tiles) => accum.concat(tiles), [])
-            .filter(tile => !isFlowerTile(tile))
+                const nonFlowerTiles = nextTilesAndMelds
+                    .map(tileOrMeld => tileOrMeld instanceof Meld ? tileOrMeld.tiles : [tileOrMeld] )
+                    .reduce<SuitedOrHonorTile[]>((accum, tiles) => accum.concat(tiles), [])
+                if (nonFlowerTiles.length < 14) {
+                    setSubmitDisabled(true);
+                } else {
+                    setSubmitDisabled(false);
+                }
 
-            if (nonFlowerTiles.length < 14) {
-                setSubmitDisabled(true);
-            } else {
-                setSubmitDisabled(false);
+                if (nextTilesAndMelds.length === 0) {
+                    setClearDisabled(true);
+                }
+            } else if (spliceIndex < (tilesAndMelds.length + chowMeldModeTiles.length)){
+                const nextChowMeldModeTiles = [...chowMeldModeTiles];
+                nextChowMeldModeTiles.splice(spliceIndex - tilesAndMelds.length, 1);
+                setChowMeldModeTiles(nextChowMeldModeTiles);
             }
-            if (nextTilesAndMelds.length === 0) {
-                setClearDisabled(true);
-            }
+
+            const numTilesPerIndex = [...tilesAndMelds, ...chowMeldModeTiles]
+                .map(tileOrMeld => tileOrMeld instanceof Meld && meldIsChow(tileOrMeld) ? tileOrMeld.tiles.length : 1);
+            const startSpliceIndexForStack = numTilesPerIndex
+                .filter((_, index) => index < spliceIndex)
+                .reduce<number>((accum, numItems) => accum + numItems, 0);
+            const numItemsSpliceForStack = numTilesPerIndex[spliceIndex];
+            const nextStack = [...clickedSuitedOrHonorTileStack];
+            nextStack.splice(startSpliceIndexForStack, numItemsSpliceForStack);
+            setClickedSuitedOrHonorTileStack(nextStack);
+        }
+    }
+
+    function createOnTileClickSpliceFromFlowerTiles(spliceIndex: number) {
+        return () => {
+            const nextFlowerTiles = [...flowerTiles];
+            nextFlowerTiles.splice(spliceIndex, 1);
+            setFlowerTiles(nextFlowerTiles);
         }
     }
 
     function tileButtonDisabled(tile: Tile) {
         if (isFlowerTile(tile)) {
-            return tilesAndMelds.filter(tileOrMeld => tileOrMeld instanceof Tile && tileOrMeld.equals(tile)).length >= maxQuantityPerFlowerTile;
+            return flowerTiles.filter(flowerTile => flowerTile.equals(tile)).length >= maxQuantityPerFlowerTile;
         }
         const selectedQuantity = tilesAndMelds
             .map(tileOrMeld => tileOrMeld instanceof Tile ? [tileOrMeld] : tileOrMeld.tiles)
@@ -229,23 +263,25 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
     }
 
     function onSubmit() {
-        const tiles: HongKongTile[] = tilesAndMelds
+        const tiles: HongKongTile[] = [...tilesAndMelds
             .map(tileOrMeld => tileOrMeld instanceof Tile ? [tileOrMeld] : tileOrMeld.tiles)
             .reduce<Tile[]>((accum, tiles) => accum.concat(tiles), [])
-            .filter(tile => isHongKongTile(tile));
+            .filter(tile => isHongKongTile(tile))];
         const userSpecifiedMelds: Meld[] = tilesAndMelds.filter(tileOrMeld => tileOrMeld instanceof Meld);
         const suitedOrHonorTiles: SuitedOrHonorTile[] = tiles
             .filter(tile => !isFlowerTile(tile))
             .filter(tile => isSuitedOrHonorTile(tile));
-        if (suitedOrHonorTiles.length < 14) {
-            alert("You need at least 14 tiles to submit.");
+        if (suitedOrHonorTiles.length < 14 || tilesAndMelds.length <= 0 || clickedSuitedOrHonorTileStack.length <= 0) {
+            alert("You need at least 14 suited or honor tiles to submit.");
             return;
         }
-        const lastTile = suitedOrHonorTiles[suitedOrHonorTiles.length-1];
+        
+        const lastTileOrMeld = tilesAndMelds[tilesAndMelds.length - 1];
+        const lastTile = clickedSuitedOrHonorTileStack[clickedSuitedOrHonorTileStack.length - 1];
+        const mostRecentTileContext = lastTileOrMeld instanceof Meld ? new MostRecentTileContext(lastTile, lastTileOrMeld) 
+            : new MostRecentTileContext(lastTile, true);
 
-        const winningHands = analyzeForWinningHands(new Hand(tiles, new MostRecentTileContext(lastTile, lastInputtedTileIsSelfDrawn), userSpecifiedMelds));
-        console.log(JSON.stringify(winningHands));
-        const pointEval = evaluateHandForHighestPossiblePointEvaluation(new Hand(tiles, new MostRecentTileContext(lastTile, lastInputtedTileIsSelfDrawn)), 
+        const pointEval = evaluateHandForHighestPossiblePointEvaluation(new Hand([...tiles, ...flowerTiles], mostRecentTileContext, userSpecifiedMelds), 
             winContext, 
             roundContext,
             props.rootConfig);
@@ -264,9 +300,12 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
 
     function onClear() {
         setTilesAndMelds([]);
-        setChowMeldModeTiles([]);
+        setFlowerTiles([]);
         setMeldMode(undefined);
+        setChowMeldModeTiles([]);
+        setClickedSuitedOrHonorTileStack([]);
         setSubmitDisabled(true);
+        setClearDisabled(true);
     }
 
     function WindTiles() {
@@ -342,11 +381,9 @@ function MahjongKeyboard(props: MahjongKeyboardProps) {
     return (
     <>
         <div className="sticky-section">
-        <TileInputBar tilesAndMelds={tilesAndMelds} chowMeldModeTiles={chowMeldModeTiles} createOnTileClickSplice={createOnTileClickSpliceFromTilesAndMelds} />
-            <div id="last-inputted-tile-config">
-            <label htmlFor="lastInputtedTileIsSelfDrawn">Last Inputted Tile is Self Drawn: </label>
-            <input type="checkbox" id="lastInputtedTileIsSelfDrawn" checked={lastInputtedTileIsSelfDrawn} onChange={onLastInputtedTileIsSelfDrawnChange} />
-            </div>
+        <TileInputBar tilesAndMelds={tilesAndMelds} lastClickedSuitedOrHonorTile={clickedSuitedOrHonorTileStack[clickedSuitedOrHonorTileStack.length - 1]} 
+            chowMeldModeTiles={chowMeldModeTiles} createOnTileClickSpliceFromTilesAndMeldsOrChowMeldModeTiles={createOnTileClickSpliceFromTilesAndMeldsOrChowMeldModeTiles} 
+            flowerTiles={flowerTiles} createOnTileClickSpliceFromFlowerTiles={createOnTileClickSpliceFromFlowerTiles} />
             <div id="calculator-submit-clear">
             <button id="calculator-submit" onClick={onSubmit} disabled={submitDisabled}>Submit</button>
             {'     '}

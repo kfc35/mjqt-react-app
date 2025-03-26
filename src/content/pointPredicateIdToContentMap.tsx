@@ -334,7 +334,7 @@ const seatWindPongKongContent: PointPredicateContent = {
 };
 
 const prevailingWindPongKongContent: PointPredicateContent = {
-    title: "Prevailing Pong/Kong",
+    title: "Prevailing Wind Pong/Kong",
     description: <div className="predicate-description">
         <p>Your hand contains a pong/kong of the round{"'"}s prevailing wind.</p>
         </div>
