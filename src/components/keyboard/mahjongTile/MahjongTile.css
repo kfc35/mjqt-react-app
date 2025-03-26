@@ -30,6 +30,10 @@
     color: darkgreen
 }
 
+.highlighted {
+    color: gold;
+}
+
 .reversible-tile {
     background-image: linear-gradient(to top right, purple, black);
 }
