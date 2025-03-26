@@ -1,4 +1,4 @@
-import { Meld, isFlowerTile, meldIsKong, meldIsChow, type SuitedOrHonorTile, type FlowerTile, SuitedTile } from 'mjqt-scoring'
+import { Meld, isFlowerTile, meldIsKong, meldIsChow, type SuitedOrHonorTile, type FlowerTile, SuitedTile, meldIsPair } from 'mjqt-scoring'
 import MahjongTile from '../mahjongTile/MahjongTile';
 import { ReactElement } from "react";
 import './TileInputBar.css';
@@ -72,7 +72,8 @@ function convertNonFlowerTilesAndMeldsToReactElements(props: TileInputBarProps):
       const meldElements : ReactElement[] = [];
       for (const [secondIndex, tile] of tileOrMeld.tiles.entries()) {
         const key = ("tile-input-index-" + index + "-" + secondIndex).toLowerCase();
-        const highlighted = props.chowMeldModeTiles.length === 0 && index === props.tilesAndMelds.length - 1 && 
+        const highlighted = (props.chowMeldModeTiles.length === 0 || (meldIsPair(tileOrMeld) && tileOrMeld.exposed)) 
+          && index === props.tilesAndMelds.length - 1 && 
           ((meldIsChow(tileOrMeld) && tile.equals(props.lastClickedSuitedOrHonorTile)) || 
           (secondIndex === tileOrMeld.tiles.length - 1 && tile.equals(props.lastClickedSuitedOrHonorTile)))
         meldElements.push(<MahjongTile tile={tile} key={key} onTileClick={props.createOnTileClickSpliceFromTilesAndMeldsOrChowMeldModeTiles(index)} highlighted={highlighted}

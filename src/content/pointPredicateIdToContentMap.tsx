@@ -422,7 +422,7 @@ const plumBlossomOnTheRoofContent: PointPredicateContent = {
     description: <div className="predicate-description">
         <p>Your winning tile is:</p> 
         <ul>
-            <li>A Five of Bamboo that completes a 4-5-6 Bamboo Chow</li>
+            <li>A Five of Circle that completes a 4-5-6 Circle Chow</li>
             <li>A replacement tile from declaring a kong</li>
         </ul>
         <p>This rule can be customized to allow the replacement tile to also come from a flower.</p>
