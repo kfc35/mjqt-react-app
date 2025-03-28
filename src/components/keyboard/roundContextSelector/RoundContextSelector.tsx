@@ -1,6 +1,6 @@
 import { WindDirection, RoundContext, WIND_TILES, windTileToWindDirection } from "mjqt-scoring";
 import { ReactElement } from "react";
-import MahjongTile from "../mahjongTile/MahjongTile";
+import MahjongTileButton from "../mahjongTileButton/MahjongTileButton";
 import "./RoundContextSelector.css"
 
 interface RoundContextSelectorProps {
@@ -16,7 +16,7 @@ function RoundContextSelector(props: RoundContextSelectorProps) {
         for (const tile of WIND_TILES) {
             const windDirection = windTileToWindDirection(tile);
             const key = (tile.group + "-" + tile.value).toLowerCase();
-            elements.push(<MahjongTile tile={tile} key={key} onTileClick={createOnTileClickHandler(windDirection)} 
+            elements.push(<MahjongTileButton tile={tile} key={key} onTileClick={createOnTileClickHandler(windDirection)} 
                 selected={selectedWindDirection === windDirection} />);
         }
         return elements;

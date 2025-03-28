@@ -1,5 +1,5 @@
 import { Meld, isFlowerTile, meldIsKong, meldIsChow, type SuitedOrHonorTile, type FlowerTile, SuitedTile, meldIsPair } from 'mjqt-scoring'
-import MahjongTile from '../mahjongTile/MahjongTile';
+import MahjongTileButton from '../mahjongTileButton/MahjongTileButton';
 import { ReactElement } from "react";
 import './TileInputBar.css';
 
@@ -61,7 +61,7 @@ function PlaceholderInputTile(): ReactElement {
 function convertFlowerTilesToReactElements(props: TileInputBarProps): ReactElement[] {
   return props.flowerTiles.map((tile, index) => {
       const key = ("tile-input-index-" + index).toLowerCase();
-      return <MahjongTile tile={tile} key={key} onTileClick={props.createOnTileClickSpliceFromFlowerTiles(index)}/>
+      return <MahjongTileButton tile={tile} key={key} onTileClick={props.createOnTileClickSpliceFromFlowerTiles(index)}/>
   });
 }
   
@@ -76,7 +76,7 @@ function convertNonFlowerTilesAndMeldsToReactElements(props: TileInputBarProps):
           && index === props.tilesAndMelds.length - 1 && 
           ((meldIsChow(tileOrMeld) && tile.equals(props.lastClickedSuitedOrHonorTile)) || 
           (secondIndex === tileOrMeld.tiles.length - 1 && tile.equals(props.lastClickedSuitedOrHonorTile)))
-        meldElements.push(<MahjongTile tile={tile} key={key} onTileClick={props.createOnTileClickSpliceFromTilesAndMeldsOrChowMeldModeTiles(index)} highlighted={highlighted}
+        meldElements.push(<MahjongTileButton tile={tile} key={key} onTileClick={props.createOnTileClickSpliceFromTilesAndMeldsOrChowMeldModeTiles(index)} highlighted={highlighted}
         />);
       }
       const className = "tile-grouping meld " + tileOrMeld.type.toLowerCase() + (tileOrMeld.exposed ? "" : " concealed");
@@ -84,14 +84,14 @@ function convertNonFlowerTilesAndMeldsToReactElements(props: TileInputBarProps):
     } else {
       const key = ("tile-input-index-" + index).toLowerCase();
       const highlighted = props.chowMeldModeTiles.length === 0 && index === props.tilesAndMelds.length - 1 && tileOrMeld.equals(props.lastClickedSuitedOrHonorTile);
-      elements.push(<MahjongTile tile={tileOrMeld} key={key} onTileClick={props.createOnTileClickSpliceFromTilesAndMeldsOrChowMeldModeTiles(index)} highlighted={highlighted} />);
+      elements.push(<MahjongTileButton tile={tileOrMeld} key={key} onTileClick={props.createOnTileClickSpliceFromTilesAndMeldsOrChowMeldModeTiles(index)} highlighted={highlighted} />);
     } 
   }
   // append any pending chow tiles at the end
   for (const [index, tile] of props.chowMeldModeTiles.entries()) {
     const key = ("tile-input-index-" + (props.tilesAndMelds.length + index)).toLowerCase();
     const highlighted = index === props.chowMeldModeTiles.length - 1 && tile.equals(props.lastClickedSuitedOrHonorTile);
-    elements.push(<MahjongTile tile={tile} key={key} onTileClick={props.createOnTileClickSpliceFromTilesAndMeldsOrChowMeldModeTiles(props.tilesAndMelds.length + index)} highlighted={highlighted} />);
+    elements.push(<MahjongTileButton tile={tile} key={key} onTileClick={props.createOnTileClickSpliceFromTilesAndMeldsOrChowMeldModeTiles(props.tilesAndMelds.length + index)} highlighted={highlighted} />);
   }
   return elements;
 }
