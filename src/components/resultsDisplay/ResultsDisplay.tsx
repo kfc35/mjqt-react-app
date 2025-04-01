@@ -1,10 +1,10 @@
-import { MeldBasedWinningHand, WinningHand, PointEvaluation, type RootPointPredicateConfiguration, MAX_POINTS } from 'mjqt-scoring'
+import { MeldBasedWinningHand, WinningHand, PointEvaluation, RootPointPredicateConfiguration } from 'mjqt-scoring'
 import getUnicodeRepresentation from '../../content/mahjongTileUnicodeMap';
 import { ReactElement } from 'react';
 import { getRouteApi } from '@tanstack/react-router';
 import './ResultsDisplay.css'
-import { pointPredicateIdToContentMap } from '../../content/pointPredicateIdToContentMap';
-import { subPointPredicateIdToContentMap } from '../../content/subPointPredicateIdToContentMap';
+import Result from './Result';
+import { ResultType } from './ResultType';
 
 function ResultsDisplay() {
     const route = getRouteApi('/results');
@@ -57,50 +57,13 @@ function winningHandToElement(winningHand: WinningHand): ReactElement {
 function printResults(pointEval: PointEvaluation, rootConfig: RootPointPredicateConfiguration): ReactElement {
     const elements: ReactElement[] = [];
     for (const result of pointEval.successUnignoredResults) {
-        const baseConfig = rootConfig.getBaseConfiguration(result.pointPredicateId);
-        if (!baseConfig) {
-            continue;
-        }
-        let content = pointPredicateIdToContentMap.get(result.pointPredicateId);
-        if (!content) {
-            content = subPointPredicateIdToContentMap.get(result.pointPredicateId);
-            if (!content) {
-                continue;
-            }
-        }
-        if (!pointEval.ignoredPointPredicateIds.has(result.pointPredicateId)) {
-            const points: string = baseConfig.points === MAX_POINTS ? rootConfig.maxPoints + " (max)" : baseConfig.points + "";
-            elements.push(<div className="success-result" key={result.pointPredicateId}>
-                {content.title} - Success: +{points} pt(s)
-            </div>);
-        }
+        elements.push(<Result resultType={ResultType.SUCCESS} result={result} rootConfig={rootConfig} key={result.pointPredicateId} />);
     }
     for (const result of pointEval.ignoredResults) {
-        let content = pointPredicateIdToContentMap.get(result.pointPredicateId);
-        if (!content) {
-            content = subPointPredicateIdToContentMap.get(result.pointPredicateId);
-            if (!content) {
-                continue;
-            }
-        }
-        if (result.success) {
-            elements.push(<div className="ignored-result" key={result.pointPredicateId}>
-                {content.title} - Points ignored (included by other successful result).
-            </div>);
-            continue;
-        }
+        elements.push(<Result resultType={ResultType.IGNORED} result={result} rootConfig={rootConfig} key={result.pointPredicateId} />);
     }
     for (const result of pointEval.failedUnignoredResults) {
-        let content = pointPredicateIdToContentMap.get(result.pointPredicateId);
-        if (!content) {
-            content = subPointPredicateIdToContentMap.get(result.pointPredicateId);
-            if (!content) {
-                continue;
-            }
-        }
-        elements.push(<div className="failure-result" key={result.pointPredicateId}>
-            {content.title} - Failure
-        </div>);
+        elements.push(<Result resultType={ResultType.FAILURE} result={result} rootConfig={rootConfig} key={result.pointPredicateId} />);
     }
     return <>
         {elements}
