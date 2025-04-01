@@ -3,8 +3,8 @@ import getUnicodeRepresentation from '../../content/mahjongTileUnicodeMap';
 import { ReactElement } from 'react';
 import { getRouteApi } from '@tanstack/react-router';
 import './ResultsDisplay.css'
-import Result from './Result';
-import { ResultType } from './ResultType';
+import Result from './result/Result';
+import { ResultType } from './result/ResultType';
 
 function ResultsDisplay() {
     const route = getRouteApi('/results');
@@ -25,7 +25,7 @@ function ResultsDisplay() {
                 <p>Points: {pointEval.points}</p>
             </div>
             <div className="results">
-                {printResults(pointEval, rootConfig)}
+                {printDetailedResults(pointEval, rootConfig)}
             </div>
         </div>
     </>
@@ -54,7 +54,7 @@ function winningHandToElement(winningHand: WinningHand): ReactElement {
     }
 }
 
-function printResults(pointEval: PointEvaluation, rootConfig: RootPointPredicateConfiguration): ReactElement {
+function printDetailedResults(pointEval: PointEvaluation, rootConfig: RootPointPredicateConfiguration): ReactElement {
     const elements: ReactElement[] = [];
     for (const result of pointEval.successUnignoredResults) {
         elements.push(<Result resultType={ResultType.SUCCESS} result={result} rootConfig={rootConfig} key={result.pointPredicateId} />);
