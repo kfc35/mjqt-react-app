@@ -1,6 +1,7 @@
 import { Meld } from "mjqt-scoring";
 import { ReactElement } from "react";
 import getUnicodeRepresentation from "../../../../content/mahjongTileUnicodeMap";
+import "./MeldDetail.css";
 
 interface MeldDetailProps {
     melds: readonly Meld[] | undefined;
@@ -17,7 +18,7 @@ function MeldDetail(props: MeldDetailProps) {
         </div>)
     }
     return <>
-        <div className="tile-detail">
+        <div className="meld-detail">
             <div className="description">
                 
             </div>

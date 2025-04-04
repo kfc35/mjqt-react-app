@@ -1,10 +1,10 @@
-import { MeldBasedWinningHand, WinningHand, PointEvaluation, RootPointPredicateConfiguration } from 'mjqt-scoring'
-import getUnicodeRepresentation from '../../content/mahjongTileUnicodeMap';
+import { PointEvaluation, RootPointPredicateConfiguration } from 'mjqt-scoring'
 import { ReactElement } from 'react';
 import { getRouteApi } from '@tanstack/react-router';
 import './ResultsDisplay.css'
 import Result from './result/Result';
 import { ResultType } from './result/ResultType';
+import WinningHandDisplay from './WinningHandDisplay';
 
 function ResultsDisplay() {
     const route = getRouteApi('/results');
@@ -20,7 +20,7 @@ function ResultsDisplay() {
 
     return <>
         <div id="results-display">
-            {winningHandToElement(winningHand)}
+            <WinningHandDisplay winningHand={winningHand} />
             <div className="points">
                 <p>Points: {pointEval.points}</p>
             </div>
@@ -32,27 +32,6 @@ function ResultsDisplay() {
 }
 
 export default ResultsDisplay
-
-function winningHandToElement(winningHand: WinningHand): ReactElement {
-    if (winningHand instanceof MeldBasedWinningHand) {
-        const elements = winningHand.melds.map((meld, index) => 
-            <div className={"tile-grouping meld " + meld.type.toLowerCase() + (meld.exposed ? "" : " concealed")} key={index}>
-                <span className="meld-text">{meld.type.toLowerCase()}: </span>
-                {meld.tiles.map(tile => getUnicodeRepresentation(tile)).join(" ")}
-            </div>);
-        return <div className="winning-hand">
-            {elements}
-            </div>
-    } else {
-        const elements = winningHand.tiles.map((tilesList, index) => 
-            <div className={"tile-grouping" + (tilesList.length === 2 && tilesList[0].equals(tilesList[1]) ? " pair" : "")} key={index}>
-                {tilesList.map(tile => getUnicodeRepresentation(tile)).join(" ")}
-            </div>);
-        return <div className="winning-hand">
-            {elements}
-            </div>
-    }
-}
 
 function printDetailedResults(pointEval: PointEvaluation, rootConfig: RootPointPredicateConfiguration): ReactElement {
     const elements: ReactElement[] = [];

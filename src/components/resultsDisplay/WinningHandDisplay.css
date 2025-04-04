@@ -1,0 +1,37 @@
+.winning-hand {
+    display: inline-block;
+    padding: 0.6em 1.2em;
+    font-size: 3.0vmax;
+}
+
+.winning-hand > span.meld-text {
+    font-size: 2vmax;
+}
+
+.winning-hand > .tile-grouping {
+    display: inline-block;
+    margin: 0.5vmax 0.5vmax;
+    border-radius: 8px;
+    border: 0.1vmax solid transparent;
+    padding: 0em 0.5vmax 0.2em 0.5vmax;
+}
+
+.winning-hand > .pair {
+    background-image: linear-gradient(to top right, slategray, black);
+}
+
+.winning-hand > .chow {
+    background-image: linear-gradient(to top right, darkcyan, black);
+}
+
+.winning-hand > .pong {
+    background-image: linear-gradient(to top right, darkmagenta, black);
+}
+
+.winning-hand > .kong {
+    background-image: linear-gradient(to top right, bisque, black);
+}
+
+.winning-hand > .concealed {
+    border: 0.1vmax dashed white;
+}

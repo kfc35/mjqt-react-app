@@ -94,10 +94,10 @@ function generateSubElements(result: PointPredicateResult): ReactElement {
         }
     }
     return <>
-    <div className="sub-results">
-        {subElements}
-    </div>
-    </>;
+        <div className="sub-results">
+            {subElements}
+        </div>
+        </>;
 }
 
 function generateSingleSuccessResultElement(result: PointPredicateSingleSuccessResult, content: PointPredicateContent, points?: string) {
@@ -106,20 +106,16 @@ function generateSingleSuccessResultElement(result: PointPredicateSingleSuccessR
     const optionalPointsString = points ? `: +${points} pt(s)` : ``;
     if (meldDetail || tileDetail) {
         // prefer meldDetail over tileDetail if meldDetail is defined
-        return <>
-        <div className="success result" key={result.pointPredicateId}>
+        return <div className="success result" key={result.pointPredicateId}>
             <details>
                 <summary>{content.title} - Success{optionalPointsString}</summary>
             {meldDetail ? meldDetail : tileDetail}
             </details>
-        </div>
-        </>;
+        </div>;
     } else {
-        return <>
-        <div className="success result" key={result.pointPredicateId}>
+        return <div className="success result" key={result.pointPredicateId}>
             {content.title} - Success
-        </div>
-        </>;
+        </div>;
     }
 }
 
@@ -128,20 +124,16 @@ function generateFailureResultElement(result: PointPredicateFailureResult, conte
     const tileDetail = result.tileDetail ? <><TileDetail tilesList={result.tileDetail.tilesThatFailPredicate} /></>: undefined;
     if (meldDetail || tileDetail) {
         // prefer meldDetail over tileDetail if meldDetail is defined
-        return <>
-        <div className="failure result" key={result.pointPredicateId}>
+        return <div className="failure result" key={result.pointPredicateId}>
             <details>
                 <summary>{content.title} - Failure</summary>
             {meldDetail ? meldDetail : tileDetail}
             </details>
-        </div>
-        </>;
+        </div>;
     } else {
-        return <>
-        <div className="failure result" key={result.pointPredicateId}>
+        return <div className="failure result" key={result.pointPredicateId}>
             {content.title} - Failure
-        </div>
-        </>;
+        </div>;
     }
 }
 
@@ -151,16 +143,14 @@ function generateFailureTopLevelResultElement(result: PointPredicateResult, cont
     } else {
         const subpredicateResultsText = getSubResultsTypeText(result);
 
-        return <>
-            <div className="failure result" key={result.pointPredicateId}>
+        return <div className="failure result" key={result.pointPredicateId}>
                 <details>
                     <summary>{content.title} - Failure</summary>
                     Subpredicate Results <br />
                     {subpredicateResultsText} {(subpredicateResultsText ? <br /> : <></>)}
                     {generateSubElements(result)}
                 </details>
-            </div>
-        </>;
+            </div>;
     }
 }
 

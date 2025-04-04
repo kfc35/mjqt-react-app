@@ -1,6 +1,7 @@
 import { Tile } from "mjqt-scoring";
 import { ReactElement } from "react";
 import getUnicodeRepresentation from "../../../../content/mahjongTileUnicodeMap";
+import "./TileDetail.css";
 
 interface TileDetailProps {
     tilesList: ReadonlyArray<ReadonlyArray<Tile>> | undefined;
